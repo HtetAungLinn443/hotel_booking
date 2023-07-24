@@ -72,7 +72,6 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
             }
         }
     }
-
 }
 ?>
 <!DOCTYPE html>
@@ -114,22 +113,20 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         <div class="login_wrapper">
             <div class="animate form login_form">
                 <section class="login_content">
-                    <form action="<?php $cp_base_url?>login.php" method="POST">
+                    <form action="<?php $cp_base_url ?>login.php" method="POST">
                         <h1>Login Form </h1>
 
                         <div>
-                            <input type="text" class="form-control" value="<?php echo $user_name; ?>" name="username"
-                                placeholder="Email or Username" required="" />
+                            <input type="text" class="form-control" value="<?php echo $user_name; ?>" name="username" placeholder="Email or Username" required="" />
                         </div>
                         <div>
-                            <input type="password" class="form-control" name="password" placeholder="Password"
-                                required="" />
+                            <input type="password" class="form-control" name="password" placeholder="Password" required="" />
                         </div>
                         <div style="text-align: start;">
                             <label for="remember">
                                 <input type="checkbox" name="remember" value="1" id="remember" <?php if ($remember == 1) {
-    echo "checked";
-}?>> Remember Me.
+                                                                                                    echo "checked";
+                                                                                                } ?>> Remember Me.
                             </label>
                         </div>
                         <div>
@@ -162,8 +159,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.buttons.js"></script>
     <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.nonblock.js"></script>
     <?php
-if ($error) {
-    echo "<script>
+    if ($error) {
+        echo "<script>
           new PNotify({
                 title: 'Error',
                 text: '$err_msg',
@@ -171,8 +168,8 @@ if ($error) {
                 styling: 'bootstrap3'
             })
             </script>";
-}
-?>
+    }
+    ?>
 </body>
 
 </html>

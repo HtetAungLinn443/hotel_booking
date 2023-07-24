@@ -4,17 +4,26 @@ require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
 $name = '';
+$type = '';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $name           = $_POST['name'];
+    $type           = $_POST['type'];
     $today_date     = date('Y-m-d H:i:s');
+
+    if ($name == "") {
+        exit();
+    }
+    if ($type == "") {
+        exit();
+    }
     $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-    $sql = "INSERT INTO `view` (name, created_at, created_by, updated_at, updated_by) 
-            VALUES ('" . $name . "', '" . $today_date . "', '" . $user_id . "', '" . $today_date . "', '" . $user_id . "')";
+    $sql = "INSERT INTO `amenity` (name, type, created_at, created_by, updated_at, updated_by) 
+            VALUES ('" . $name . "', '" . $type . "', '" . $today_date . "', '" . $user_id . "', '" . $today_date . "', '" . $user_id . "')";
 
     $result = $mysqli->query($sql);
     if ($result) {
         $msg = " View Create Successfully ";
-        $url = $cp_base_url . "view_list.php?success=" . urlencode($msg);
+        $url = $cp_base_url . "amenity_list.php?success=" . $msg;
         header("Refresh: 0; url=$url");
         exit();
     }
@@ -31,26 +40,42 @@ require "../templates/cp_template_top_nav.php";
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>Hotel Room View</h3>
+                <h3>Hotel Room Amenity</h3>
             </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                    <h3>View Create</h3>
+                    <h3>Amenity Create</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" novalidate>
+                        <form action="<?php echo $cp_base_url; ?>amenity_create.php" method="POST" novalidate>
 
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>" placeholder="ex. Lake View" required="required" min="3" />
+                                    <input class="form-control" name="name" value="<?php echo $name; ?>" placeholder="ex. 43” LED TV" required="required" min="3" />
                                 </div>
                             </div>
-
+                            <div class="field item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Type<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6">
+                                    <select class="form-control" name="type">
+                                        <option>Choose option</option>
+                                        <option <?php if ($type == "1") {
+                                                    echo "selected";
+                                                } ?> value="1">General</option>
+                                        <option <?php if ($type == "2") {
+                                                    echo "selected";
+                                                } ?> value="2">Bathroom</option>
+                                        <option <?php if ($type == "3") {
+                                                    echo "selected";
+                                                } ?> value="3">Others</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="ln_solid">
                                 <div class="form-group">
                                     <div class="col-md-6 offset-md-3">

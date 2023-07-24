@@ -20,12 +20,12 @@
                             <span>Welcome,</span>
                             <h2>
                                 <?php
-if (isset($_SESSION['username'])) {
-    echo $_SESSION['username'];
-} else {
-    echo $_COOKIE['username'];
-}
-?>
+                                if (isset($_SESSION['username'])) {
+                                    echo $_SESSION['username'];
+                                } else {
+                                    echo $_COOKIE['username'];
+                                }
+                                ?>
                             </h2>
                         </div>
                     </div>
@@ -45,8 +45,7 @@ if (isset($_SESSION['username'])) {
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-binoculars"></i> Room View <span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-binoculars"></i> Room View <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>view_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>view_list.php">Listing</a></li>
@@ -54,8 +53,7 @@ if (isset($_SESSION['username'])) {
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-binoculars"></i>Room Bed <span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-binoculars"></i>Room Bed <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>bed_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>bed_list.php">Listing</a></li>
@@ -63,8 +61,7 @@ if (isset($_SESSION['username'])) {
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-binoculars"></i> Room Amenities<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-binoculars"></i> Room Amenities<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>amenity_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>amenity_list.php">Listing</a></li>
@@ -72,8 +69,7 @@ if (isset($_SESSION['username'])) {
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-binoculars"></i> Room Special Feature<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-binoculars"></i> Room Special Feature<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>feature_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>feature_list.php">Listing</a></li>
@@ -89,8 +85,7 @@ if (isset($_SESSION['username'])) {
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-binoculars"></i> Reservation<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-binoculars"></i> Reservation<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>reservation_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>reservation_list.php">Listing</a></li>
