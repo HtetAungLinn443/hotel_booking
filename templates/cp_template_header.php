@@ -31,10 +31,7 @@
     <link href="<?php echo $base_url ?>assets/backend/css/custom.min.css" rel="stylesheet">
     <!-- jQuery -->
     <script src="<?php echo $base_url ?>assets/backend/js/jquery/jquery.min.js"></script>
-    <!-- PNotify -->
-    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.js"></script>
-    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.buttons.js"></script>
-    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.nonblock.js"></script>
+
     <!-- Validator JS -->
     <script src="<?php echo $base_url ?>assets/backend/js/validator/multifield.js"></script>
     <script src="<?php echo $base_url ?>assets/backend/js/validator/validator.js"></script>

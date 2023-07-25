@@ -3,20 +3,47 @@ session_start();
 require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
+require "../requires/include_function.php";
 $name = '';
-if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name           = $_POST['name'];
-    $today_date     = date('Y-m-d H:i:s');
-    $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-    $sql = "INSERT INTO `view` (name, created_at, created_by, updated_at, updated_by) 
-            VALUES ('" . $name . "', '" . $today_date . "', '" . $user_id . "', '" . $today_date . "', '" . $user_id . "')";
+$process_error = false;
+$error = false;
+$err_msg = "";
 
-    $result = $mysqli->query($sql);
-    if ($result) {
-        $msg = " View Create Successfully ";
-        $url = $cp_base_url . "view_list.php?success=" . urlencode($msg);
-        header("Refresh: 0; url=$url");
-        exit();
+if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
+    $name = $mysqli->real_escape_string($_POST['name']);
+
+    if ($name == null) {
+        $process_error = true;
+        $error = true;
+        $err_msg = "Please Fill Room View Name";
+    }
+    $nameCheck = "SELECT name,deleted_at FROM `view` WHERE name = '$name' AND deleted_at IS NULL";
+    $check_result = $mysqli->query($nameCheck);
+    if ($check_result->num_rows >= 1) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= "This " . $name . "is Alreadey Exit";
+    }
+
+    if (!$process_error) {
+        $today_date = date('Y-m-d H:i:s');
+        $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+        $table = 'view';
+        $insert_data = array(
+            'name' => "'$name'",
+            'created_at' => "'$today_date'",
+            'created_by' => "'$user_id'",
+            'updated_at' => "'$today_date'",
+            'updated_by' => "'$user_id'",
+        );
+        $result = insertQuery($insert_data, $table, $mysqli);
+        if ($result) {
+            $msg = " View Create Successfully ";
+            $url = $cp_base_url . "view_list.php?success=" . urlencode($msg);
+            header("Refresh: 0; url=$url");
+            exit();
+        }
+
     }
 }
 $title = "Hotel Booking";
@@ -44,10 +71,12 @@ require "../templates/cp_template_top_nav.php";
                         <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" novalidate>
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+                                        class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>" placeholder="ex. Lake View" required="required" min="3" />
+                                    <input class="form-control" name="name" value="<?php echo $name; ?>"
+                                        placeholder="ex. Lake View" required="required" min="3" />
                                 </div>
                             </div>
 
@@ -73,19 +102,39 @@ require "../templates/cp_template_top_nav.php";
 <?php
 require "../templates/cp_template_footer.php";
 ?>
-<script>
-    // var validator = new FormValidator({
-    //     "events": ['blur', 'input', 'change']
-    // }, document.forms[0]);
-    // on form "submit" event
-    // document.forms[0].onsubmit = function(e) {
-    //     var submit = true,
-    //         validatorResult = validator.checkAll(this);
-    //     console.log(validatorResult);
-    //     return !!validatorResult.valid;
-    // };
-    // on form "reset" event
-    document.forms[0].onreset = function(e) {
+<!-- PNotify -->
+    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.js"></script>
+    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.buttons.js"></script>
+    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.nonblock.js"></script>
+<?php
+if ($error) {
+    echo "<script>
+          new PNotify({
+                title: 'Error',
+                text: '$err_msg',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+          </script>";
+}
+
+?>
+</html>
+<!-- <script>
+
+    var validator = new FormValidator({
+        "events": ['blur', 'input', 'change']
+    }, document.forms[0]);
+
+    document.forms[0].onsubmit = function (e) {
+        var submit = true,
+            validatorResult = validator.checkAll(this);
+        console.log(validatorResult);
+        return !!validatorResult.valid;
+    };
+
+    document.forms[0].onreset = function (e) {
         validator.reset();
     };
-</script>
+
+</script> -->

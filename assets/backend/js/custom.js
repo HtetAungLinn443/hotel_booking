@@ -1802,7 +1802,7 @@ function init_validator() {
 
 
     // initialize the validator function
-    validator.message.date = 'not a real date';
+    // validator.message.date = 'not a real date';
 
     // validate a field on "blur" event, a 'select' on 'change' event & a '.reuired' classed multifield on 'keyup':
     $('form')

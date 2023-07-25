@@ -26,7 +26,7 @@ require "../templates/cp_template_top_nav.php";
         <div class="row">
             <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                    <a href="<?php echo $cp_base_url ?>bed_create.php" class="btn btn-info ">Create View</a>
+                    <a href="<?php echo $cp_base_url ?>view_create.php" class="btn btn-info ">Create View</a>
                     <div class="x_content">
                         <br />
                         <table class="table table-hover table-striped">
@@ -46,11 +46,11 @@ require "../templates/cp_template_top_nav.php";
                             </thead>
                             <tbody>
                                 <?php
-                                if ($res_row >= 1) {
-                                    while ($row = $result_all->fetch_assoc()) {
-                                        $db_id      = htmlspecialchars($row['id']);
-                                        $db_name    = htmlspecialchars($row['name']);
-                                ?>
+if ($res_row >= 1) {
+    while ($row = $result_all->fetch_assoc()) {
+        $db_id = htmlspecialchars($row['id']);
+        $db_name = htmlspecialchars($row['name']);
+        ?>
                                 <tr>
                                     <td></td>
                                     <td>
@@ -65,13 +65,14 @@ require "../templates/cp_template_top_nav.php";
                                     </td>
                                 </tr>
                                 <?php
-                                    }
-                                }
-                                ?>
+}
+}
+?>
 
 
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>
@@ -100,16 +101,22 @@ document.forms[0].onreset = function(e) {
 <?php
 require "../templates/cp_template_footer.php";
 ?>
-
+<!-- PNotify -->
+    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.js"></script>
+    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.buttons.js"></script>
+    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.nonblock.js"></script>
 <?php
 if (isset($_GET['success'])) {
+    $error_msg = $_GET['success'];
+
     echo "<script>
           new PNotify({
-                title: 'Error',
-                text: '$err_msg',
-                type: 'error',
+                title: 'Create Success ',
+                text: '$error_msg',
+                type: 'success',
                 styling: 'bootstrap3'
             })
             </script>";
 }
 ?>
+</html>
