@@ -3,20 +3,50 @@ session_start();
 require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
+require "../requires/include_function.php";
 $name = '';
+$process_error = false;
+$error = false;
+$err_msg = "";
+$table = 'bed_type';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $name           = $_POST['name'];
-    $today_date     = date('Y-m-d H:i:s');
-    $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-    $sql = "INSERT INTO `bed_type` (name, created_at, created_by, updated_at, updated_by) 
-            VALUES ('" . $name . "', '" . $today_date . "', '" . $user_id . "', '" . $today_date . "', '" . $user_id . "')";
 
-    $result = $mysqli->query($sql);
-    if ($result) {
-        $msg = " View Create Successfully ";
-        $url = $cp_base_url . "bed_list.php?success=" . urlencode($msg);
-        header("Refresh: 0; url=$url");
-        exit();
+    if ($name == null) {
+        $process_error = true;
+        $error = true;
+        $err_msg = "Please Fill Room View Name";
+    }
+
+    $check_colume = array(
+        'name'      => $name,
+    );
+    $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
+
+    if ($name_unique >= 1) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= "This " . $name . " Name is Alreadey Exit";
+    }
+
+    if (!$process_error) {
+        $today_date     = date('Y-m-d H:i:s');
+        $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+
+        $insert_data = array(
+            'name' => "'$name'",
+            'created_at' => "'$today_date'",
+            'created_by' => "'$user_id'",
+            'updated_at' => "'$today_date'",
+            'updated_by' => "'$user_id'",
+        );
+        $result = insertQuery($insert_data, $table, $mysqli);
+        if ($result) {
+            $msg = " View Create Successfully ";
+            $url = $cp_base_url . "bed_list.php?success=" . urlencode($msg);
+            header("Refresh: 0; url=$url");
+            exit();
+        }
     }
 }
 $title = "Hotel Booking";
@@ -44,10 +74,12 @@ require "../templates/cp_template_top_nav.php";
                         <form action="<?php echo $cp_base_url; ?>bed_create.php" method="POST" novalidate>
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+                                        class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>" placeholder="ex. Double Bed" required="required" min="3" />
+                                    <input class="form-control" name="name" value="<?php echo $name; ?>"
+                                        placeholder="ex. Double Bed" required="required" min="3" />
                                 </div>
                             </div>
 
@@ -74,18 +106,22 @@ require "../templates/cp_template_top_nav.php";
 require "../templates/cp_template_footer.php";
 ?>
 <script>
-    // var validator = new FormValidator({
-    //     "events": ['blur', 'input', 'change']
-    // }, document.forms[0]);
-    // on form "submit" event
-    // document.forms[0].onsubmit = function(e) {
-    //     var submit = true,
-    //         validatorResult = validator.checkAll(this);
-    //     console.log(validatorResult);
-    //     return !!validatorResult.valid;
-    // };
-    // on form "reset" event
+$(document).ready(function() {
+    $("#signupForm").validate({
+        rules: {
+            viewName: "required",
+            view: "required",
+            name: "required",
+        },
+        messages: {
+            viewName: "Please enter your View Name",
+            view: "Please enter your View Name",
+            name: "Please enter your View Name",
+        }
+    });
+
     document.forms[0].onreset = function(e) {
-        validator.reset();
+        location.reload();
     };
+})
 </script>

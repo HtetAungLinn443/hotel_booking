@@ -52,19 +52,19 @@ require "../templates/cp_template_top_nav.php";
                                         $db_id      = htmlspecialchars($row['id']);
                                         $db_name    = htmlspecialchars($row['name']);
                                 ?>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <?php echo $db_id; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $db_name; ?>
-                                    </td>
-                                    <td>
-                                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                                        <a href="" class="btn btn-sm btn-danger">Delete</a>
-                                    </td>
-                                </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <?php echo $db_id; ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $db_name; ?>
+                                            </td>
+                                            <td>
+                                                <a href="" class="btn btn-sm btn-primary">Edit</a>
+                                                <a href="" class="btn btn-sm btn-danger">Delete</a>
+                                            </td>
+                                        </tr>
                                 <?php
                                     }
                                 }
@@ -82,20 +82,20 @@ require "../templates/cp_template_top_nav.php";
 
 </div>
 <script>
-var validator = new FormValidator({
-    "events": ['blur', 'input', 'change']
-}, document.forms[0]);
-// on form "submit" event
-document.forms[0].onsubmit = function(e) {
-    var submit = true,
-        validatorResult = validator.checkAll(this);
-    console.log(validatorResult);
-    return !!validatorResult.valid;
-};
-// on form "reset" event
-document.forms[0].onreset = function(e) {
-    validator.reset();
-};
+    var validator = new FormValidator({
+        "events": ['blur', 'input', 'change']
+    }, document.forms[0]);
+    // on form "submit" event
+    document.forms[0].onsubmit = function(e) {
+        var submit = true,
+            validatorResult = validator.checkAll(this);
+        console.log(validatorResult);
+        return !!validatorResult.valid;
+    };
+    // on form "reset" event
+    document.forms[0].onreset = function(e) {
+        validator.reset();
+    };
 </script>
 <!-- /page content -->
 <?php
@@ -104,11 +104,13 @@ require "../templates/cp_template_footer.php";
 
 <?php
 if (isset($_GET['success'])) {
+    $error_msg = $_GET['success'];
+
     echo "<script>
           new PNotify({
-                title: 'Error',
-                text: '$err_msg',
-                type: 'error',
+                title: 'Create Success ',
+                text: '$error_msg',
+                type: 'success',
                 styling: 'bootstrap3'
             })
             </script>";

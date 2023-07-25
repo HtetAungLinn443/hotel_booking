@@ -25,7 +25,8 @@
 
 <!-- Custom Theme Scripts -->
 <script src="<?php echo $base_url ?>assets/backend/js/custom.js"></script>
-
-
+<script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.js"></script>
+<script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.buttons.js"></script>
+<script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.nonblock.js"></script>
+<script src="<?php echo $base_url ?>assets/backend/js/validation/jquery.validate.js"></script>
 </body>
-

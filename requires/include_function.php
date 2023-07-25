@@ -8,3 +8,26 @@ function insertQuery($insert_data, $table, $mysqli)
     $result = $mysqli->query($sql);
     return $result;
 }
+
+function checkUniqueValue($check_colume, $table, $mysqli)
+{
+    $sql = "";
+    $sql .= "SELECT count(id) as total FROM ";
+    $sql .= $table;
+    $sql .= " WHERE ";
+    $count = 0;
+    foreach ($check_colume as $key => $value) {
+        $count++;
+        if ($count == 1) {
+            $sql .= $key . '=' . "'" . $value . "'";
+        } else {
+            $sql .= " AND " . $key . '=' . "'" . $value . "'";
+        }
+    }
+    $sql .= " AND deleted_at IS NULL";
+    $result = $mysqli->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $total = $row['total'];
+    }
+    return $total;
+}

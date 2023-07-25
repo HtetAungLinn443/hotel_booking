@@ -65,11 +65,11 @@ require "../templates/cp_template_top_nav.php";
                                             </td>
                                             <td>
                                                 <?php
-                                                if ($db_type == "1") {
+                                                if ($db_type == "0") {
                                                     echo "General";
-                                                } else if ($db_type == "2") {
+                                                } else if ($db_type == "1") {
                                                     echo "Bathroom";
-                                                } else {
+                                                } else if ($db_type == "2") {
                                                     echo "Others";
                                                 }
                                                 ?>
@@ -118,11 +118,12 @@ require "../templates/cp_template_footer.php";
 
 <?php
 if (isset($_GET['success'])) {
+    $error_msg = $_GET['success'];
     echo "<script>
           new PNotify({
-                title: 'Error',
-                text: '$err_msg',
-                type: 'error',
+                title: 'Create Success ',
+                text: '$error_msg',
+                type: 'success',
                 styling: 'bootstrap3'
             })
             </script>";

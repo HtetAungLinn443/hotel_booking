@@ -8,7 +8,7 @@ $name = '';
 $process_error = false;
 $error = false;
 $err_msg = "";
-
+$table = 'view';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $name = $mysqli->real_escape_string($_POST['name']);
 
@@ -17,18 +17,22 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $error = true;
         $err_msg = "Please Fill Room View Name";
     }
-    $nameCheck = "SELECT name,deleted_at FROM `view` WHERE name = '$name' AND deleted_at IS NULL";
-    $check_result = $mysqli->query($nameCheck);
-    if ($check_result->num_rows >= 1) {
+
+    $check_colume = array(
+        'name'      => $name,
+    );
+    $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
+
+    if ($name_unique >= 1) {
         $process_error = true;
         $error = true;
-        $err_msg .= "This " . $name . "is Alreadey Exit";
+        $err_msg .= "This " . $name . " Name is Alreadey Exit";
     }
 
     if (!$process_error) {
         $today_date = date('Y-m-d H:i:s');
         $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-        $table = 'view';
+
         $insert_data = array(
             'name' => "'$name'",
             'created_at' => "'$today_date'",
@@ -43,7 +47,6 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
             header("Refresh: 0; url=$url");
             exit();
         }
-
     }
 }
 $title = "Hotel Booking";
@@ -68,17 +71,16 @@ require "../templates/cp_template_top_nav.php";
                     <h3>View Create</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" novalidate>
+                        <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" novalidate id="signupForm">
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="viewName">Name<span class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>"
-                                        placeholder="ex. Lake View" required="required" min="3" />
+                                    <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>" placeholder="ex. Lake View" required="required" />
                                 </div>
                             </div>
+
 
                             <div class="ln_solid">
                                 <div class="form-group">
@@ -103,9 +105,7 @@ require "../templates/cp_template_top_nav.php";
 require "../templates/cp_template_footer.php";
 ?>
 <!-- PNotify -->
-    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.js"></script>
-    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.buttons.js"></script>
-    <script src="<?php echo $base_url ?>assets/backend/js/pnotify/pnotify.nonblock.js"></script>
+
 <?php
 if ($error) {
     echo "<script>
@@ -119,22 +119,25 @@ if ($error) {
 }
 
 ?>
+<script>
+    $(document).ready(function() {
+        $("#signupForm").validate({
+            rules: {
+                viewName: "required",
+                view: "required",
+                name: "required",
+            },
+            messages: {
+                viewName: "Please enter your View Name",
+                view: "Please enter your View Name",
+                name: "Please enter your View Name",
+            }
+        });
+
+        document.forms[0].onreset = function(e) {
+            location.reload();
+        };
+    })
+</script>
+
 </html>
-<!-- <script>
-
-    var validator = new FormValidator({
-        "events": ['blur', 'input', 'change']
-    }, document.forms[0]);
-
-    document.forms[0].onsubmit = function (e) {
-        var submit = true,
-            validatorResult = validator.checkAll(this);
-        console.log(validatorResult);
-        return !!validatorResult.valid;
-    };
-
-    document.forms[0].onreset = function (e) {
-        validator.reset();
-    };
-
-</script> -->

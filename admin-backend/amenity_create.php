@@ -3,29 +3,60 @@ session_start();
 require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
+require "../requires/include_function.php";
 $name = '';
 $type = '';
+$process_error = false;
+$error = false;
+$err_msg = "";
+$table = 'amenity';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name           = $_POST['name'];
+    $name           = $mysqli->real_escape_string($_POST['name']);
     $type           = $_POST['type'];
-    $today_date     = date('Y-m-d H:i:s');
 
-    if ($name == "") {
-        exit();
+    if ($name == null) {
+        $process_error = true;
+        $error = true;
+        $err_msg = "Please Fill Room Aminity Name";
     }
-    if ($type == "") {
-        exit();
+    if ($type == null) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= "Please Select Room Aminity Type";
     }
-    $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-    $sql = "INSERT INTO `amenity` (name, type, created_at, created_by, updated_at, updated_by) 
-            VALUES ('" . $name . "', '" . $type . "', '" . $today_date . "', '" . $user_id . "', '" . $today_date . "', '" . $user_id . "')";
+    $check_colume = array(
+        'name'      => $name,
+        'type'      => $type,
+    );
+    $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
 
-    $result = $mysqli->query($sql);
-    if ($result) {
-        $msg = " View Create Successfully ";
-        $url = $cp_base_url . "amenity_list.php?success=" . $msg;
-        header("Refresh: 0; url=$url");
-        exit();
+    if ($name_unique >= 1) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= "This " . $name . " Name is Alreadey Exit";
+    }
+
+    if (!$process_error) {
+        $today_date     = date('Y-m-d H:i:s');
+        $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+        $today_date = date('Y-m-d H:i:s');
+        $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+
+        $insert_data = array(
+            'name'          => "'$name'",
+            'type'          => "'$type'",
+            'created_at'    => "'$today_date'",
+            'created_by'    => "'$user_id'",
+            'updated_at'    => "'$today_date'",
+            'updated_by'    => "'$user_id'",
+        );
+        $result = insertQuery($insert_data, $table, $mysqli);
+        if ($result) {
+            $msg = " View Create Successfully ";
+            $url = $cp_base_url . "amenity_list.php?success=" . $msg;
+            header("Refresh: 0; url=$url");
+            exit();
+        }
     }
 }
 $title = "Hotel Booking";
@@ -50,29 +81,33 @@ require "../templates/cp_template_top_nav.php";
                     <h3>Amenity Create</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>amenity_create.php" method="POST" novalidate>
+                        <form action="<?php echo $cp_base_url; ?>amenity_create.php" method="POST" novalidate
+                            id="signupForm">
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+                                        class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>" placeholder="ex. 43” LED TV" required="required" min="3" />
+                                    <input class="form-control" name="name" value="<?php echo $name; ?>"
+                                        placeholder="ex. 43” LED TV" required="required" />
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Type<span class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Type<span
+                                        class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <select class="form-control" name="type">
-                                        <option>Choose option</option>
+                                    <select class="form-control" name="type" id="selectForm">
+                                        <option value="">Choose option</option>
+                                        <option <?php if ($type == "0") {
+                                                    echo "selected";
+                                                } ?> value="0">General</option>
                                         <option <?php if ($type == "1") {
                                                     echo "selected";
-                                                } ?> value="1">General</option>
+                                                } ?> value="1">Bathroom</option>
                                         <option <?php if ($type == "2") {
                                                     echo "selected";
-                                                } ?> value="2">Bathroom</option>
-                                        <option <?php if ($type == "3") {
-                                                    echo "selected";
-                                                } ?> value="3">Others</option>
+                                                } ?> value="2">Others</option>
                                     </select>
                                 </div>
                             </div>
@@ -98,19 +133,34 @@ require "../templates/cp_template_top_nav.php";
 <?php
 require "../templates/cp_template_footer.php";
 ?>
+<?php
+if ($error) {
+    echo "<script>
+          new PNotify({
+                title: 'Error',
+                text: '$err_msg',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+          </script>";
+}
+
+?>
 <script>
-    // var validator = new FormValidator({
-    //     "events": ['blur', 'input', 'change']
-    // }, document.forms[0]);
-    // on form "submit" event
-    // document.forms[0].onsubmit = function(e) {
-    //     var submit = true,
-    //         validatorResult = validator.checkAll(this);
-    //     console.log(validatorResult);
-    //     return !!validatorResult.valid;
-    // };
-    // on form "reset" event
+$(document).ready(function() {
+    $("#signupForm").validate({
+        rules: {
+            viewName: "required",
+            selectForm: "required",
+        },
+        messages: {
+            viewName: "Please enter your Amenity Name",
+            selectForm: "Please Choose Anemity Type",
+        }
+    });
+
     document.forms[0].onreset = function(e) {
-        validator.reset();
+        location.reload();
     };
+})
 </script>
