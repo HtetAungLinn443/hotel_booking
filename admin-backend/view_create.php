@@ -19,7 +19,7 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     }
 
     $check_colume = array(
-        'name'      => $name,
+        'name' => $name,
     );
     $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
 
@@ -42,8 +42,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         );
         $result = insertQuery($insert_data, $table, $mysqli);
         if ($result) {
-            $msg = " View Create Successfully ";
-            $url = $cp_base_url . "view_list.php?success=" . urlencode($msg);
+            $msg = " Hotel Room View Create Successfully... ";
+            $url = $cp_base_url . "view_list.php?success=" . urlencode($name);
             header("Refresh: 0; url=$url");
             exit();
         }
@@ -71,13 +71,16 @@ require "../templates/cp_template_top_nav.php";
                     <h3>View Create</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" novalidate id="signupForm">
+                        <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" novalidate
+                            id="signupForm">
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="viewName">Name<span class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="viewName">Name<span
+                                        class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>" placeholder="ex. Lake View" required="required" />
+                                    <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>"
+                                        placeholder="ex. Lake View" required="required" />
                                 </div>
                             </div>
 
@@ -120,24 +123,24 @@ if ($error) {
 
 ?>
 <script>
-    $(document).ready(function() {
-        $("#signupForm").validate({
-            rules: {
-                viewName: "required",
-                view: "required",
-                name: "required",
-            },
-            messages: {
-                viewName: "Please enter your View Name",
-                view: "Please enter your View Name",
-                name: "Please enter your View Name",
-            }
-        });
+$(document).ready(function() {
+    $("#signupForm").validate({
+        rules: {
+            viewName: "required",
+            view: "required",
+            name: "required",
+        },
+        messages: {
+            viewName: "Please enter your View Name",
+            view: "Please enter your View Name",
+            name: "Please enter your View Name",
+        }
+    });
 
-        document.forms[0].onreset = function(e) {
-            location.reload();
-        };
-    })
+    document.forms[0].onreset = function(e) {
+        location.reload();
+    };
+})
 </script>
 
 </html>

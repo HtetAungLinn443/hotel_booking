@@ -57,8 +57,10 @@ require "../templates/cp_template_top_nav.php";
 
 </div>
 
-</div>
+
 <!-- /page content -->
 <?php
 require "../templates/cp_template_footer.php";
 ?>
+
+</html>

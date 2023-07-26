@@ -11,8 +11,8 @@ $error = false;
 $err_msg = "";
 $table = 'amenity';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name           = $mysqli->real_escape_string($_POST['name']);
-    $type           = $_POST['type'];
+    $name = $mysqli->real_escape_string($_POST['name']);
+    $type = $_POST['type'];
 
     if ($name == null) {
         $process_error = true;
@@ -25,8 +25,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $err_msg .= "Please Select Room Aminity Type";
     }
     $check_colume = array(
-        'name'      => $name,
-        'type'      => $type,
+        'name' => $name,
+        'type' => $type,
     );
     $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
 
@@ -37,18 +37,18 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     }
 
     if (!$process_error) {
-        $today_date     = date('Y-m-d H:i:s');
-        $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+        $today_date = date('Y-m-d H:i:s');
+        $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
         $today_date = date('Y-m-d H:i:s');
         $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
 
         $insert_data = array(
-            'name'          => "'$name'",
-            'type'          => "'$type'",
-            'created_at'    => "'$today_date'",
-            'created_by'    => "'$user_id'",
-            'updated_at'    => "'$today_date'",
-            'updated_by'    => "'$user_id'",
+            'name' => "'$name'",
+            'type' => "'$type'",
+            'created_at' => "'$today_date'",
+            'created_by' => "'$user_id'",
+            'updated_at' => "'$today_date'",
+            'updated_by' => "'$user_id'",
         );
         $result = insertQuery($insert_data, $table, $mysqli);
         if ($result) {
@@ -100,14 +100,16 @@ require "../templates/cp_template_top_nav.php";
                                     <select class="form-control" name="type" id="selectForm">
                                         <option value="">Choose option</option>
                                         <option <?php if ($type == "0") {
-                                                    echo "selected";
-                                                } ?> value="0">General</option>
+    echo "selected";
+}?> value="0"> <?php echo $aminity_type[0] ?></option>
                                         <option <?php if ($type == "1") {
-                                                    echo "selected";
-                                                } ?> value="1">Bathroom</option>
+    echo "selected";
+}?> value="1"><?php echo $aminity_type[1] ?>
+                                        </option>
                                         <option <?php if ($type == "2") {
-                                                    echo "selected";
-                                                } ?> value="2">Others</option>
+    echo "selected";
+}?> value="2"><?php echo $aminity_type[2] ?>
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -164,3 +166,5 @@ $(document).ready(function() {
     };
 })
 </script>
+
+</html>

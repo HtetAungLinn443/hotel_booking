@@ -10,7 +10,7 @@ $error = false;
 $err_msg = "";
 $table = 'bed_type';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name           = $_POST['name'];
+    $name = $_POST['name'];
 
     if ($name == null) {
         $process_error = true;
@@ -19,7 +19,7 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     }
 
     $check_colume = array(
-        'name'      => $name,
+        'name' => $name,
     );
     $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
 
@@ -30,8 +30,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     }
 
     if (!$process_error) {
-        $today_date     = date('Y-m-d H:i:s');
-        $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+        $today_date = date('Y-m-d H:i:s');
+        $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
 
         $insert_data = array(
             'name' => "'$name'",
@@ -125,3 +125,5 @@ $(document).ready(function() {
     };
 })
 </script>
+
+</html>
