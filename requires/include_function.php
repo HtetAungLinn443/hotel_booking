@@ -31,3 +31,12 @@ function checkUniqueValue($check_colume, $table, $mysqli)
     }
     return $total;
 }
+
+function listQuery($select_column, $table, $mysqli)
+{
+    $cloumn_value = implode(", ", $select_column);
+
+    $sql = "SELECT " . $cloumn_value . " FROM " . "`z$table`" . " WHERE deleted_at IS NULL";
+    $result_all = $mysqli->query($sql);
+    return $result_all;
+}
