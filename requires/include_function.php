@@ -8,18 +8,30 @@ function insertQuery($insert_data, $table, $mysqli)
     $result = $mysqli->query($sql);
     return $result;
 }
-// function updateQuery($update_data, $id, $table, $mysqli)
-// {
-//     $column_name = implode(", ", array_keys($update_data));
-//     $cloumn_value = implode(", ", $update_data);
-//     $sql = "UPDATE `$table` SET "
-
-// }
-function checkUniqueValue($check_colume, $table, $mysqli)
+function updateQuery($update_data, $id, $table, $mysqli)
 {
     $sql = "";
+    $sql .= "UPDATE `$table` SET ";
+    $count = 0;
+    foreach ($update_data as $key => $value) {
+        $count++;
+        if ($count == 1) {
+            $sql .= $key . "=" . $value;
+        } else {
+            $sql .= ", " . $key . "=" . $value;
+        }
+    }
+    $sql .= " WHERE id = '$id' ";
+
+    $resule = $mysqli->query($sql);
+    return $resule;
+}
+function checkUniqueValue($check_colume, $table, $mysqli)
+{
+
+    $sql = "";
     $sql .= "SELECT count(id) as total FROM ";
-    $sql .= $table;
+    $sql .= "`$table`";
     $sql .= " WHERE ";
     $count = 0;
     foreach ($check_colume as $key => $value) {
@@ -31,13 +43,36 @@ function checkUniqueValue($check_colume, $table, $mysqli)
         }
     }
     $sql .= " AND deleted_at IS NULL";
+
     $result = $mysqli->query($sql);
     while ($row = $result->fetch_assoc()) {
         $total = $row['total'];
     }
     return $total;
 }
-
+function checkUniqueValueUpdate($id, $check_colume, $table, $mysqli)
+{
+    $sql = "";
+    $sql .= "SELECT count(id) as total FROM ";
+    $sql .= "`$table`";
+    $sql .= " WHERE ";
+    $count = 0;
+    foreach ($check_colume as $key => $value) {
+        $count++;
+        if ($count == 1) {
+            $sql .= $key . '=' . "'" . $value . "'";
+        } else {
+            $sql .= " AND " . $key . '=' . "'" . $value . "'";
+        }
+    }
+    $sql .= " AND id != '$id' ";
+    $sql .= " AND deleted_at IS NULL";
+    $result = $mysqli->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $total = $row['total'];
+    }
+    return $total;
+}
 function listQuery($select_column, $table, $mysqli, $order = null)
 {
     $cloumn_value = implode(", ", $select_column);
@@ -53,9 +88,17 @@ function listQuery($select_column, $table, $mysqli, $order = null)
             } else {
                 $sql .= ", " . $key . " " . $value;
             }
-
         }
     }
+    $result_all = $mysqli->query($sql);
+    return $result_all;
+}
+
+function selectQueryById($id, $select_column, $table, $mysqli)
+{
+    $cloumn_value = implode(", ", $select_column);
+    $sql = "";
+    $sql .= "SELECT " . $cloumn_value . " FROM " . "`$table`" . " WHERE id='$id' AND deleted_at IS NULL ";
     $result_all = $mysqli->query($sql);
     return $result_all;
 }

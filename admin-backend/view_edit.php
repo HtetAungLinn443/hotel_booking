@@ -4,15 +4,16 @@ require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
 require "../requires/include_function.php";
-$name = '';
+$name   = '';
+$id     = '';
 $process_error = false;
 $error = false;
 $err_msg = "";
 $table = 'view';
 
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name = $mysqli->real_escape_string($_POST['name']);
-
+    $name   = $mysqli->real_escape_string($_POST['name']);
+    $id     = $mysqli->real_escape_string($_POST['view_id']);
     if ($name == null) {
         $process_error = true;
         $error = true;
@@ -22,9 +23,7 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $check_colume = array(
         'name' => $name,
     );
-
-    $name_check_sql = "SELECT id FROM `view` WHERE name='$name' AND deleted_at IS NULL";
-    $name_unique = $mysqli->query($name_check_sql);
+    $name_unique = checkUniqueValueUpdate($id, $check_colume, $table, $mysqli);
 
     if ($name_unique >= 1) {
         $process_error = true;
@@ -37,27 +36,35 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
         $id = $_POST['view_id'];
         $id = $mysqli->real_escape_string($id);
+        $update_data = [
+            'name' => "'$name'",
+            'updated_at' => "'$today_date'",
+            'updated_by' => "'$user_id'"
+        ];
+        $update = updateQuery($update_data, $id, $table, $mysqli);
 
-        $sql = "UPDATE `$table` SET name='$name', updated_at='$today_date', updated_by='$user_id' WHERE id='$id'";
-        $result = $mysqli->query($sql);
-
-        if ($result >= '1') {
-
-            $msg = " Hotel Room View Name Edit Successfully... ";
-            $url = $cp_base_url . "view_list.php?edit=" . urlencode($msg);
+        if ($update) {
+            $url = $cp_base_url . "view_list.php?msg=edit";
             header("Refresh: 0; url=$url");
             exit();
         }
     }
 } else {
-    if (isset($_GET['id'])) {
+    if (!isset($_GET['id'])) {
         $url = $cp_base_url . "view_list.php?msg=error";
-
+        header("Refresh: 0; url=$url");
+        exit();
     }
-    $current_id = (int) ($_GET['id']);
-    $current_id = $mysqli->real_escape_string($current_id);
-    $sql = "SELECT id, name FROM `view` WHERE id='$current_id' AND deleted_at IS NULL";
-    $result = $mysqli->query($sql);
+    $id = (int) ($_GET['id']);
+    $id = $mysqli->real_escape_string($id);
+    $select_column = ['id', 'name'];
+    $result = selectQueryById($id, $select_column, $table, $mysqli);
+    $row_res = $result->num_rows;
+    if ($row_res <= 0) {
+        $url = $cp_base_url . "view_list.php?msg=error";
+        header("Refresh: 0; url=$url");
+        exit();
+    }
     while ($row = $result->fetch_assoc()) {
         $name = htmlspecialchars($row['name']);
     }
@@ -93,7 +100,7 @@ require "../templates/cp_template_top_nav.php";
 
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>"
-                                        placeholder="ex. Lake View" required="required" />
+                                        placeholder="ex. Lake View" required="required" autofocus />
                                 </div>
                             </div>
 
@@ -103,7 +110,7 @@ require "../templates/cp_template_top_nav.php";
                                         <button type='submit' class="btn btn-primary">Submit</button>
                                         <button type='reset' class="btn btn-success">Reset</button>
                                         <input type="hidden" name="form-sub" value="1">
-                                        <input type="hidden" name="view_id" value="<?php echo $current_id; ?>">
+                                        <input type="hidden" name="view_id" value="<?php echo $id; ?>">
                                     </div>
                                 </div>
                             </div>
