@@ -3,8 +3,10 @@ session_start();
 require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
-$sql = "SELECT * FROM `bed_type`";
-$result_all = $mysqli->query($sql);
+require "../requires/include_function.php";
+$table = 'bed_type';
+$select_column = ['id', 'name'];
+$result_all = listQuery($select_column, $table, $mysqli);
 $res_row = $result_all->num_rows;
 
 $title = "Hotel Booking";
@@ -26,50 +28,49 @@ require "../templates/cp_template_top_nav.php";
         <div class="row">
             <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                    <a href="<?php echo $cp_base_url ?>bed_create.php" class="btn btn-info ">Create Bed</a>
+                    <a href="<?php echo $cp_base_url ?>bed_create.php" class="btn btn-info ">Create Bed Type</a>
                     <div class="x_content">
                         <br />
-                        <table class="table table-hover table-striped">
+
+                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                            cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>
-                                        ID
-                                    </th>
-                                    <th>
-                                        Name
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
+                                    <th class="col-4">ID</th>
+                                    <th class="col-5">Name</th>
+                                    <th class="col-3 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 if ($res_row >= 1) {
                                     while ($row = $result_all->fetch_assoc()) {
-                                        $db_id      = htmlspecialchars($row['id']);
-                                        $db_name    = htmlspecialchars($row['name']);
+                                        $db_id = htmlspecialchars($row['id']);
+                                        $db_name = htmlspecialchars($row['name']);
                                 ?>
                                 <tr>
-                                    <td></td>
+
                                     <td>
                                         <?php echo $db_id; ?>
                                     </td>
                                     <td>
                                         <?php echo $db_name; ?>
                                     </td>
-                                    <td>
-                                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                                        <a href="" class="btn btn-sm btn-danger">Delete</a>
+                                    <td style="text-align: center;">
+                                        <a href="<?php echo $cp_base_url . "edit.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="<?php echo $cp_base_url . "delete.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
                                     }
                                 }
                                 ?>
-
-
                             </tbody>
                         </table>
                     </div>
@@ -79,35 +80,16 @@ require "../templates/cp_template_top_nav.php";
     </div>
 </div>
 
-</div>
-<script>
-var validator = new FormValidator({
-    "events": ['blur', 'input', 'change']
-}, document.forms[0]);
-// on form "submit" event
-document.forms[0].onsubmit = function(e) {
-    var submit = true,
-        validatorResult = validator.checkAll(this);
-    console.log(validatorResult);
-    return !!validatorResult.valid;
-};
-// on form "reset" event
-document.forms[0].onreset = function(e) {
-    validator.reset();
-};
-</script>
 <!-- /page content -->
-<?php
-require "../templates/cp_template_footer.php";
-?>
 
 <?php
+require "../templates/cp_template_footer.php";
 if (isset($_GET['success'])) {
-    $error_msg = $_GET['success'];
+    $error_msg = $_GET['success'] . " Room Bed Type Create Successfully!";
 
     echo "<script>
           new PNotify({
-                title: 'Create Success ',
+                title: 'Create Success!',
                 text: '$error_msg',
                 type: 'success',
                 styling: 'bootstrap3'

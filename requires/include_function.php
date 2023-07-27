@@ -36,7 +36,21 @@ function listQuery($select_column, $table, $mysqli)
 {
     $cloumn_value = implode(", ", $select_column);
 
-    $sql = "SELECT " . $cloumn_value . " FROM " . "`z$table`" . " WHERE deleted_at IS NULL";
+    $sql = "SELECT " . $cloumn_value . " FROM " . "`$table`" . " WHERE deleted_at IS NULL";
     $result_all = $mysqli->query($sql);
     return $result_all;
+}
+
+function deleteList($id, $table, $mysqli)
+{
+    $user_id = '';
+    $date = date('Y-m-d H:i:s');
+    if (isset($_SESSION['id'])) {
+        $user_id = $_SESSION['id'];
+    } else {
+        $user_id = $_COOKIE['id'];
+    }
+    $sql = "UPDATE `$table` SET deleted_at='$date', deleted_by='$user_id' WHERE id='100'";
+    $result = $mysqli->query($sql);
+    return $result;
 }

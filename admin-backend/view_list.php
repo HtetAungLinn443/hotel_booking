@@ -43,11 +43,11 @@ require "../templates/cp_template_top_nav.php";
                             </thead>
                             <tbody>
                                 <?php
-if ($res_row >= 1) {
-    while ($row = $result_all->fetch_assoc()) {
-        $db_id = htmlspecialchars($row['id']);
-        $db_name = htmlspecialchars($row['name']);
-        ?>
+                                if ($res_row >= 1) {
+                                    while ($row = $result_all->fetch_assoc()) {
+                                        $db_id = htmlspecialchars($row['id']);
+                                        $db_name = htmlspecialchars($row['name']);
+                                ?>
                                 <tr>
 
                                     <td>
@@ -57,20 +57,20 @@ if ($res_row >= 1) {
                                         <?php echo $db_name; ?>
                                     </td>
                                     <td style="text-align: center;">
-                                        <a href="<?php echo $cp_base_url . "edit.php?id=" . $db_id ?>"
+                                        <a href="<?php echo $cp_base_url . "view_edit.php?id=" . $db_id ?>"
                                             class="btn btn-sm btn-info">
                                             <i class="fa-regular fa-pen-to-square"></i>
                                         </a>
-                                        <a href="<?php echo $cp_base_url . "delete.php?id=" . $db_id ?>"
+                                        <a href="<?php echo $cp_base_url . "view_delete.php?id=" . $db_id ?>"
                                             class="btn btn-sm btn-danger">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
                                 <?php
-}
-}
-?>
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
