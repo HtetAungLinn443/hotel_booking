@@ -2480,10 +2480,7 @@ function init_calendar() {
 
 function init_DataTables() {
 
-    console.log('run_datatables');
-
     if (typeof($.fn.DataTable) === 'undefined') { return; }
-    console.log('init_DataTables');
 
     var handleDataTableButtons = function() {
         if ($("#datatable-buttons").length) {
@@ -2530,7 +2527,16 @@ function init_DataTables() {
         keys: true
     });
 
-    $('#datatable-responsive').DataTable();
+    var $responsivedatetable = $("#datatable-responsive");
+    $responsivedatetable.DataTable({
+        'order': [
+            [0, 'desc']
+        ],
+        'columnDefs': [
+            { orderable: false, targets: [0] }
+        ]
+    })
+
 
     $('#datatable-scroller').DataTable({
         ajax: "js/datatables/json/scroller-demo.json",
@@ -2548,7 +2554,7 @@ function init_DataTables() {
 
     $datatable.dataTable({
         'order': [
-            [1, 'asc']
+            [0, 'desc']
         ],
         'columnDefs': [
             { orderable: false, targets: [0] }

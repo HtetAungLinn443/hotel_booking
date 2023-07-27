@@ -8,7 +8,13 @@ function insertQuery($insert_data, $table, $mysqli)
     $result = $mysqli->query($sql);
     return $result;
 }
+// function updateQuery($update_data, $id, $table, $mysqli)
+// {
+//     $column_name = implode(", ", array_keys($update_data));
+//     $cloumn_value = implode(", ", $update_data);
+//     $sql = "UPDATE `$table` SET "
 
+// }
 function checkUniqueValue($check_colume, $table, $mysqli)
 {
     $sql = "";
@@ -32,11 +38,24 @@ function checkUniqueValue($check_colume, $table, $mysqli)
     return $total;
 }
 
-function listQuery($select_column, $table, $mysqli)
+function listQuery($select_column, $table, $mysqli, $order = null)
 {
     $cloumn_value = implode(", ", $select_column);
+    $sql = "";
+    $sql .= "SELECT " . $cloumn_value . " FROM " . "`$table`" . " WHERE deleted_at IS NULL ";
+    if ($order != null) {
+        $sql .= " ORDER BY ";
+        $count = 0;
+        foreach ($order as $key => $value) {
+            $count++;
+            if ($count == 1) {
+                $sql .= $key . " " . $value;
+            } else {
+                $sql .= ", " . $key . " " . $value;
+            }
 
-    $sql = "SELECT " . $cloumn_value . " FROM " . "`$table`" . " WHERE deleted_at IS NULL";
+        }
+    }
     $result_all = $mysqli->query($sql);
     return $result_all;
 }
@@ -50,7 +69,7 @@ function deleteList($id, $table, $mysqli)
     } else {
         $user_id = $_COOKIE['id'];
     }
-    $sql = "UPDATE `$table` SET deleted_at='$date', deleted_by='$user_id' WHERE id='100'";
+    $sql = "UPDATE `$table` SET deleted_at='$date', deleted_by='$user_id' WHERE id='$id'";
     $result = $mysqli->query($sql);
     return $result;
 }

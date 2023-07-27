@@ -5,11 +5,25 @@ require "../requires/connect.php";
 require "../requires/check_authencation.php";
 require "../requires/include_function.php";
 $table = 'view';
+$success = false;
+$success_message = '';
+$error = false;
+$error_message = '';
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] == 'success') {
+        $success = true;
+        $success_message = 'Create Hotel Room View Success!';
+    } else {
+        $error = true;
+        $error_message = 'Soething Wrong.';
+    }
+}
 $select_column = ['id', 'name'];
-$result_all = listQuery($select_column, $table, $mysqli);
+$order_by = ['id' => 'DESC'];
+$result_all = listQuery($select_column, $table, $mysqli, $order_by);
 $res_row = $result_all->num_rows;
 
-$title = "Hotel Booking";
+$title = "Hotel Booking::Room View List";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -43,11 +57,11 @@ require "../templates/cp_template_top_nav.php";
                             </thead>
                             <tbody>
                                 <?php
-                                if ($res_row >= 1) {
-                                    while ($row = $result_all->fetch_assoc()) {
-                                        $db_id = htmlspecialchars($row['id']);
-                                        $db_name = htmlspecialchars($row['name']);
-                                ?>
+if ($res_row >= 1) {
+    while ($row = $result_all->fetch_assoc()) {
+        $db_id = htmlspecialchars($row['id']);
+        $db_name = htmlspecialchars($row['name']);
+        ?>
                                 <tr>
 
                                     <td>
@@ -68,9 +82,9 @@ require "../templates/cp_template_top_nav.php";
                                     </td>
                                 </tr>
                                 <?php
-                                    }
-                                }
-                                ?>
+}
+}
+?>
                             </tbody>
                         </table>
                     </div>
@@ -85,13 +99,36 @@ require "../templates/cp_template_top_nav.php";
 <?php
 require "../templates/cp_template_footer.php";
 if (isset($_GET['success'])) {
-    $error_msg = $_GET['success'] . " Room View Name Create Successfully!";
+    $error_msg = " Room View Name Create Successfully!";
 
     echo "<script>
           new PNotify({
                 title: 'Create Success!',
                 text: '$error_msg',
                 type: 'success',
+                styling: 'bootstrap3'
+            })
+            </script>";
+}
+if (isset($_GET['edit'])) {
+    $error_msg = $_GET['edit'];
+
+    echo "<script>
+          new PNotify({
+                title: 'Edit Success!',
+                text: '$error_msg',
+                type: 'success',
+                styling: 'bootstrap3'
+            })
+            </script>";
+}
+
+if ($error) {
+    echo "<script>
+          new PNotify({
+                title: 'Error!',
+                text: '$error_message',
+                type: 'error',
                 styling: 'bootstrap3'
             })
             </script>";
