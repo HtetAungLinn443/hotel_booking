@@ -75,8 +75,10 @@ if ($db_type == "0") {
         ?>
                                     </td>
                                     <td>
-                                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                                        <a href="" class="btn btn-sm btn-danger">Delete</a>
+                                        <a href="<?php echo $cp_base_url . "amenity_edit.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="<?php echo $cp_base_url . "amenity_delete.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-danger">Delete</a>
                                     </td>
                                 </tr>
                                 <?php

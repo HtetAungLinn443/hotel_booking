@@ -4,16 +4,16 @@ require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
 require "../requires/include_function.php";
-$name   = '';
-$id     = '';
+$name = '';
+$id = '';
 $process_error = false;
 $error = false;
 $err_msg = "";
 $table = 'view';
 
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name   = $mysqli->real_escape_string($_POST['name']);
-    $id     = $mysqli->real_escape_string($_POST['view_id']);
+    $name = $mysqli->real_escape_string($_POST['name']);
+    $id = $mysqli->real_escape_string($_POST['view_id']);
     if ($name == null) {
         $process_error = true;
         $error = true;
@@ -39,7 +39,7 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $update_data = [
             'name' => "'$name'",
             'updated_at' => "'$today_date'",
-            'updated_by' => "'$user_id'"
+            'updated_by' => "'$user_id'",
         ];
         $update = updateQuery($update_data, $id, $table, $mysqli);
 
@@ -69,7 +69,7 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $name = htmlspecialchars($row['name']);
     }
 }
-$title = "Hotel Booking:: Edit View Name";
+$title = "Hotel Booking:: Edit Room View Page";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -91,8 +91,7 @@ require "../templates/cp_template_top_nav.php";
                     <h3>View Update</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>view_edit.php" method="POST" novalidate
-                            id="signupForm">
+                        <form action="<?php echo $cp_base_url; ?>view_edit.php" method="POST" id="createForm">
 
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align" for="viewName">Name<span
@@ -102,13 +101,15 @@ require "../templates/cp_template_top_nav.php";
                                     <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>"
                                         placeholder="ex. Lake View" required="required" autofocus />
                                 </div>
+                                <label class="col-form-label col-md-3 col-sm-3 label-error hide"
+                                    id="viewName_error">Please fill room view name.</label>
                             </div>
 
                             <div class="ln_solid">
                                 <div class="form-group">
                                     <div class="col-md-6 offset-md-3">
-                                        <button type='submit' class="btn btn-primary">Submit</button>
-                                        <button type='reset' class="btn btn-success">Reset</button>
+                                        <button type='button' class="btn btn-primary" id="submit-btn">Submit</button>
+                                        <button type='reset' class="btn btn-success" id="reset-btn">Reset</button>
                                         <input type="hidden" name="form-sub" value="1">
                                         <input type="hidden" name="view_id" value="<?php echo $id; ?>">
                                     </div>
@@ -144,22 +145,24 @@ if ($error) {
 ?>
 <script>
 $(document).ready(function() {
-    $("#signupForm").validate({
-        rules: {
-            viewName: "required",
-            view: "required",
-            name: "required",
-        },
-        messages: {
-            viewName: "Please enter your View Name",
-            view: "Please enter your View Name",
-            name: "Please enter your View Name",
-        }
-    });
+    $(document).ready(function() {
+        $("#submit-btn").click(function() {
+            const view_name = $('#viewName').val();
 
-    document.forms[0].onreset = function(e) {
-        location.reload();
-    };
+            if (view_name == '') {
+                $("#viewName_error").show();
+            } else {
+                $("#viewName_error").hide();
+                $("#createForm").submit();
+            }
+        });
+        // when click reset btn
+        $("#reset-btn").click(function() {
+            $("#viewName_error").hide();
+            $('#viewName').val('');
+        })
+
+    })
 })
 </script>
 

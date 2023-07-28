@@ -1,0 +1,8 @@
+.label-error {
+    color: red;
+    text-align: left;
+}
+
+.label-error.hide {
+    display: none;
+}
