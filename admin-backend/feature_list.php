@@ -3,11 +3,33 @@ session_start();
 require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
-$sql = "SELECT * FROM `special_feature`";
-$result_all = $mysqli->query($sql);
+require "../requires/include_function.php";
+$table = 'special_feature';
+$success = false;
+$success_message = '';
+$error = false;
+$error_message = '';
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] == 'success') {
+        $success = true;
+        $success_message = 'Created Hotel Room Special Feature Success!';
+    } else if ($_GET['msg'] == 'edit') {
+        $success = true;
+        $success_message = 'Updated Hotel Room Special Feature Success!';
+    } else if ($_GET['msg'] == 'delete') {
+        $success = true;
+        $success_message = 'Deleted Hotel Room Special Feature Success!';
+    } else {
+        $error = true;
+        $error_message = 'Something Wrong.';
+    }
+}
+$select_column = ['id', 'name'];
+$order_by = ['id' => 'DESC'];
+$result_all = listQuery($select_column, $table, $mysqli, $order_by);
 $res_row = $result_all->num_rows;
 
-$title = "Hotel Booking";
+$title = "Hotel Booking::Room Special Feature List Page";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -30,47 +52,46 @@ require "../templates/cp_template_top_nav.php";
                         Feature</a>
                     <div class="x_content">
                         <br />
-                        <table class="table table-hover table-striped">
+
+                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                            cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>
-                                        ID
-                                    </th>
-                                    <th>
-                                        Name
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
+                                    <th class="col-4">ID</th>
+                                    <th class="col-5">Name</th>
+                                    <th class="col-3 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-if ($res_row >= 1) {
-    while ($row = $result_all->fetch_assoc()) {
-        $db_id = htmlspecialchars($row['id']);
-        $db_name = htmlspecialchars($row['name']);
-        ?>
+                                if ($res_row >= 1) {
+                                    while ($row = $result_all->fetch_assoc()) {
+                                        $db_id = htmlspecialchars($row['id']);
+                                        $db_name = htmlspecialchars($row['name']);
+                                ?>
                                 <tr>
-                                    <td></td>
+
                                     <td>
                                         <?php echo $db_id; ?>
                                     </td>
                                     <td>
                                         <?php echo $db_name; ?>
                                     </td>
-                                    <td>
-                                        <a href="" class="btn btn-sm btn-primary">Edit</a>
-                                        <a href="" class="btn btn-sm btn-danger">Delete</a>
+                                    <td style="text-align: center;">
+                                        <a href="<?php echo $cp_base_url . "feature_edit.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="<?php echo $cp_base_url . "feature_delete.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
-}
-}
-?>
-
-
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -80,21 +101,27 @@ if ($res_row >= 1) {
     </div>
 </div>
 
-
-
 <!-- /page content -->
+
 <?php
 require "../templates/cp_template_footer.php";
-?>
 
-<?php
-if (isset($_GET['success'])) {
-    $error_msg = $_GET['success'];
-
+if ($error) {
     echo "<script>
           new PNotify({
-                title: 'Create Success ',
-                text: '$error_msg',
+                title: 'Error!',
+                text: '$error_message',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+            </script>";
+}
+
+if ($success) {
+    echo "<script>
+          new PNotify({
+                title: 'Success!',
+                text: '$success_message',
                 type: 'success',
                 styling: 'bootstrap3'
             })

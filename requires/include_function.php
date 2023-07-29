@@ -26,6 +26,8 @@ function updateQuery($update_data, $id, $table, $mysqli)
     $resule = $mysqli->query($sql);
     return $resule;
 }
+
+// check Unique Value
 function checkUniqueValue($check_colume, $table, $mysqli)
 {
 
@@ -50,6 +52,8 @@ function checkUniqueValue($check_colume, $table, $mysqli)
     }
     return $total;
 }
+
+// Update Check Unique Value
 function checkUniqueValueUpdate($id, $check_colume, $table, $mysqli)
 {
     $sql = "";
@@ -73,6 +77,8 @@ function checkUniqueValueUpdate($id, $check_colume, $table, $mysqli)
     }
     return $total;
 }
+
+// List Query
 function listQuery($select_column, $table, $mysqli, $order = null)
 {
     $cloumn_value = implode(", ", $select_column);

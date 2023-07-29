@@ -3,11 +3,33 @@ session_start();
 require "../requires/common.php";
 require "../requires/connect.php";
 require "../requires/check_authencation.php";
-$sql = "SELECT * FROM `amenity`";
-$result_all = $mysqli->query($sql);
+require "../requires/include_function.php";
+$table = 'amenity';
+$success = false;
+$success_message = '';
+$error = false;
+$error_message = '';
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] == 'success') {
+        $success = true;
+        $success_message = 'Created Hotel Room Amenity Success!';
+    } else if ($_GET['msg'] == 'edit') {
+        $success = true;
+        $success_message = 'Updated Hotel Room Amenity Success!';
+    } else if ($_GET['msg'] == 'delete') {
+        $success = true;
+        $success_message = 'Deleted Hotel Room Amenity Success!';
+    } else {
+        $error = true;
+        $error_message = 'Something Wrong.';
+    }
+}
+$select_column = ['id', 'name', 'type'];
+$order_by = ['id' => 'DESC'];
+$result_all = listQuery($select_column, $table, $mysqli, $order_by);
 $res_row = $result_all->num_rows;
 
-$title = "Hotel Booking";
+$title = "Hotel Booking::Room Amenity List Page";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -29,34 +51,27 @@ require "../templates/cp_template_top_nav.php";
                     <a href="<?php echo $cp_base_url ?>amenity_create.php" class="btn btn-info ">Create Amenity</a>
                     <div class="x_content">
                         <br />
-                        <table class="table table-hover table-striped">
+
+                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                            cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>
-                                        ID
-                                    </th>
-                                    <th>
-                                        Name
-                                    </th>
-                                    <th>
-                                        Type
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
+                                    <th class="col-2">ID</th>
+                                    <th class="col-4">Name</th>
+                                    <th class="col-3">Type</th>
+                                    <th class="col-3 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-if ($res_row >= 1) {
-    while ($row = $result_all->fetch_assoc()) {
-        $db_id = htmlspecialchars($row['id']);
-        $db_name = htmlspecialchars($row['name']);
-        $db_type = htmlspecialchars($row['type']);
-        ?>
+                                if ($res_row >= 1) {
+                                    while ($row = $result_all->fetch_assoc()) {
+                                        $db_id = htmlspecialchars($row['id']);
+                                        $db_name = htmlspecialchars($row['name']);
+                                        $db_type = htmlspecialchars($row['type']);
+                                ?>
                                 <tr>
-                                    <td></td>
+
                                     <td>
                                         <?php echo $db_id; ?>
                                     </td>
@@ -64,29 +79,23 @@ if ($res_row >= 1) {
                                         <?php echo $db_name; ?>
                                     </td>
                                     <td>
-                                        <?php
-if ($db_type == "0") {
-            echo "General";
-        } else if ($db_type == "1") {
-            echo "Bathroom";
-        } else if ($db_type == "2") {
-            echo "Others";
-        }
-        ?>
+                                        <?php echo $aminity_type[$db_type]; ?>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <a href="<?php echo $cp_base_url . "amenity_edit.php?id=" . $db_id ?>"
-                                            class="btn btn-sm btn-primary">Edit</a>
+                                            class="btn btn-sm btn-info">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </a>
                                         <a href="<?php echo $cp_base_url . "amenity_delete.php?id=" . $db_id ?>"
-                                            class="btn btn-sm btn-danger">Delete</a>
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
-}
-}
-?>
-
-
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -96,19 +105,27 @@ if ($db_type == "0") {
     </div>
 </div>
 
-
 <!-- /page content -->
+
 <?php
 require "../templates/cp_template_footer.php";
-?>
 
-<?php
-if (isset($_GET['success'])) {
-    $error_msg = $_GET['success'];
+if ($error) {
     echo "<script>
           new PNotify({
-                title: 'Create Success ',
-                text: '$error_msg',
+                title: 'Error!',
+                text: '$error_message',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+            </script>";
+}
+
+if ($success) {
+    echo "<script>
+          new PNotify({
+                title: 'Success!',
+                text: '$success_message',
                 type: 'success',
                 styling: 'bootstrap3'
             })

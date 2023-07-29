@@ -99,10 +99,10 @@ require "../templates/cp_template_top_nav.php";
 
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>"
-                                        placeholder="ex. Lake View" required="required" autofocus />
+                                        required="required" autofocus />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
-                                    id="viewName_error">Please fill room view name.</label>
+                                    id="viewName_error"></label>
                             </div>
 
                             <div class="ln_solid">
@@ -145,23 +145,36 @@ if ($error) {
 ?>
 <script>
 $(document).ready(function() {
-    $(document).ready(function() {
-        $("#submit-btn").click(function() {
-            const view_name = $('#viewName').val();
 
-            if (view_name == '') {
-                $("#viewName_error").show();
-            } else {
-                $("#viewName_error").hide();
-                $("#createForm").submit();
-            }
-        });
-        // when click reset btn
-        $("#reset-btn").click(function() {
+    $("#submit-btn").click(function() {
+        let error = false;
+        const view_name = $("#viewName").val();
+        const view_name_length = view_name.length;
+
+        if (view_name == '') {
+            $("#viewName_error").text('Please fill hotel room bed type');
+            $("#viewName_error").show();
+            error = true;
+        }
+        if (view_name_length < 2 && view_name != '') {
+            $("#viewName_error").text('Hotel room bed type must be greater then two.');
+            $("#viewName_error").show();
+            error = true;
+        }
+        if (view_name_length > 20 && view_name != '') {
+            $("#viewName_error").text('Hotel room bed type must be less then twenty.');
+            $("#viewName_error").show();
+            error = true;
+        }
+        if (!error) {
             $("#viewName_error").hide();
-            $('#viewName').val('');
-        })
-
+            $("#createForm").submit();
+        }
+    });
+    // when click reset btn
+    $("#reset-btn").click(function() {
+        $("#viewName_error").hide();
+        $('#viewName').val('');
     })
 })
 </script>

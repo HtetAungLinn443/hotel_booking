@@ -1,7 +1,7 @@
 <body class="nav-md">
     <div class="container body">
         <div class="main_container">
-            <div class="col-md-3 left_col">
+            <div class="col-md-3 left_col menu_fixed">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
                         <a href="index.html" class="site_title"><i class="fa fa-hotel"></i>
@@ -45,8 +45,7 @@
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-binoculars"></i> Room View <span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-binoculars"></i> Room View <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>view_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>view_list.php">Listing</a></li>
@@ -62,8 +61,7 @@
                                 </li>
 
                                 <li>
-                                    <a><i class="fa fa-list"></i> Room Amenities<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-list"></i> Room Amenities<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>amenity_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>amenity_list.php">Listing</a></li>
@@ -71,8 +69,7 @@
                                 </li>
 
                                 <li>
-                                    <a><i class="fa-solid fa-hotel"></i> Room Special Feature<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa-solid fa-hotel"></i> Room Special Feature<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>feature_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>feature_list.php">Listing</a></li>
@@ -80,8 +77,7 @@
                                 </li>
 
                                 <li>
-                                    <a><i class="fa-solid fa-hotel"></i> Room<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa-solid fa-hotel"></i> Room<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>room_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>room_list.php">Listing</a></li>
@@ -89,8 +85,7 @@
                                 </li>
 
                                 <li>
-                                    <a><i class="fa-solid fa-circle-plus"></i> Reservation<span
-                                            class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa-solid fa-circle-plus"></i> Reservation<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="<?php echo $cp_base_url; ?>reservation_create.php">Create</a></li>
                                         <li><a href="<?php echo $cp_base_url; ?>reservation_list.php">Listing</a></li>

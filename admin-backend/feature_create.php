@@ -10,27 +10,29 @@ $error = false;
 $err_msg = "";
 $table = 'special_feature';
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    $name           = $mysqli->real_escape_string($_POST['name']);
-    if ($name == null) {
+    $name = $mysqli->real_escape_string($_POST['name']);
+
+    if ($name == '') {
         $process_error = true;
         $error = true;
-        $err_msg = "Please Fill Room View Name";
+        $err_msg = "Please Fill Room Special Feature Name";
     }
 
     $check_colume = array(
-        'name'      => $name,
+        'name' => $name,
     );
     $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
 
     if ($name_unique >= 1) {
         $process_error = true;
         $error = true;
-        $err_msg .= "This " . $name . " Name is Alreadey Exit";
+        $err_msg .= "This Feature is Alreadey Exit!";
     }
 
     if (!$process_error) {
-        $today_date     = date('Y-m-d H:i:s');
-        $user_id        = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+        $today_date = date('Y-m-d H:i:s');
+        $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+
         $insert_data = array(
             'name' => "'$name'",
             'created_at' => "'$today_date'",
@@ -40,14 +42,13 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         );
         $result = insertQuery($insert_data, $table, $mysqli);
         if ($result) {
-            $msg = " View Create Successfully ";
-            $url = $cp_base_url . "feature_list.php?success=" . urlencode($msg);
+            $url = $cp_base_url . "feature_list.php?msg=success";
             header("Refresh: 0; url=$url");
             exit();
         }
     }
 }
-$title = "Hotel Booking";
+$title = "Hotel Booking:: Room Special Feature Create Page";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -67,25 +68,29 @@ require "../templates/cp_template_top_nav.php";
             <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <h3>Special Feature Create</h3>
+                    <button onclick="history.back()" class="btn btn-dark">Back</button>
                     <div class="x_content">
+
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>feature_create.php" method="POST" novalidate>
+                        <form action="<?php echo $cp_base_url; ?>feature_create.php" method="POST" id="createForm">
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="viewName">Name<span
                                         class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>"
-                                        placeholder="ex. Separate shower and bathtub." required="required" min="3" />
+                                    <input class="form-control" name="name" id="viewName" value="<?php echo $name; ?>"
+                                        placeholder="ex. Separate shower and bathtub" autofocus />
                                 </div>
+                                <label class="col-form-label col-md-3 col-sm-3 label-error hide"
+                                    id="viewName_error"></label>
                             </div>
 
                             <div class="ln_solid">
                                 <div class="form-group">
                                     <div class="col-md-6 offset-md-3">
-                                        <button type='submit' class="btn btn-primary">Submit</button>
-                                        <button type='reset' class="btn btn-success">Reset</button>
+                                        <button type='button' class="btn btn-primary" id="submit-btn">Submit</button>
+                                        <button type='reset' class="btn btn-success" id="reset-btn">Reset</button>
                                         <input type="hidden" name="form-sub" value="1">
                                     </div>
                                 </div>
@@ -103,25 +108,55 @@ require "../templates/cp_template_top_nav.php";
 <?php
 require "../templates/cp_template_footer.php";
 ?>
+
 <script>
 $(document).ready(function() {
-    $("#signupForm").validate({
-        rules: {
-            viewName: "required",
-            view: "required",
-            name: "required",
-        },
-        messages: {
-            viewName: "Please enter your View Name",
-            view: "Please enter your View Name",
-            name: "Please enter your View Name",
+    $("#submit-btn").click(function() {
+        let error = false;
+        const view_name = $("#viewName").val();
+        const view_name_length = view_name.length;
+
+        if (view_name == '') {
+            $("#viewName_error").text('Please fill hotel room view name');
+            $("#viewName_error").show();
+            error = true;
+        }
+        if (view_name_length < 2 && view_name != '') {
+            $("#viewName_error").text('Hotel room view name must be greater then two.');
+            $("#viewName_error").show();
+            error = true;
+        }
+        if (view_name_length > 150 && view_name != '') {
+            $("#viewName_error").text('Hotel room view name must be less then eighty.');
+            $("#viewName_error").show();
+            error = true;
+        }
+        if (!error) {
+            $("#viewName_error").hide();
+            $("#createForm").submit();
         }
     });
+    // when click reset btn
+    $("#reset-btn").click(function() {
+        $("#viewName_error").hide();
+        $('#viewName').val('');
+    })
 
-    document.forms[0].onreset = function(e) {
-        location.reload();
-    };
 })
 </script>
+<?php
+if ($error) {
+    echo "<script>
+          new PNotify({
+                title: 'Error',
+                text: '$err_msg',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+          </script>";
+}
+
+?>
+
 
 </html>

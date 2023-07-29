@@ -5,11 +5,31 @@ require "../requires/connect.php";
 require "../requires/check_authencation.php";
 require "../requires/include_function.php";
 $table = 'bed_type';
+$success = false;
+$success_message = '';
+$error = false;
+$error_message = '';
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] == 'success') {
+        $success = true;
+        $success_message = 'Created Hotel Room Bed Type Success!';
+    } else if ($_GET['msg'] == 'edit') {
+        $success = true;
+        $success_message = 'Updated Hotel Room Bed Type Success!';
+    } else if ($_GET['msg'] == 'delete') {
+        $success = true;
+        $success_message = 'Deleted Hotel Room Bed Type Success!';
+    } else {
+        $error = true;
+        $error_message = 'Something Wrong.';
+    }
+}
 $select_column = ['id', 'name'];
-$result_all = listQuery($select_column, $table, $mysqli);
+$order_by = ['id' => 'DESC'];
+$result_all = listQuery($select_column, $table, $mysqli, $order_by);
 $res_row = $result_all->num_rows;
 
-$title = "Hotel Booking";
+$title = "Hotel Booking::Room Bed List Page";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -32,8 +52,7 @@ require "../templates/cp_template_top_nav.php";
                     <div class="x_content">
                         <br />
 
-                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
-                            cellspacing="0" width="100%">
+                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th class="col-4">ID</th>
@@ -48,25 +67,23 @@ require "../templates/cp_template_top_nav.php";
                                         $db_id = htmlspecialchars($row['id']);
                                         $db_name = htmlspecialchars($row['name']);
                                 ?>
-                                <tr>
+                                        <tr>
 
-                                    <td>
-                                        <?php echo $db_id; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $db_name; ?>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <a href="<?php echo $cp_base_url . "edit.php?id=" . $db_id ?>"
-                                            class="btn btn-sm btn-info">
-                                            <i class="fa-regular fa-pen-to-square"></i>
-                                        </a>
-                                        <a href="<?php echo $cp_base_url . "delete.php?id=" . $db_id ?>"
-                                            class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                            <td>
+                                                <?php echo $db_id; ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $db_name; ?>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <a href="<?php echo $cp_base_url . "bed_edit.php?id=" . $db_id ?>" class="btn btn-sm btn-info">
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                </a>
+                                                <a href="<?php echo $cp_base_url . "bed_delete.php?id=" . $db_id ?>" class="btn btn-sm btn-danger">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
                                 <?php
                                     }
                                 }
@@ -84,13 +101,23 @@ require "../templates/cp_template_top_nav.php";
 
 <?php
 require "../templates/cp_template_footer.php";
-if (isset($_GET['success'])) {
-    $error_msg = $_GET['success'] . " Room Bed Type Create Successfully!";
 
+if ($error) {
     echo "<script>
           new PNotify({
-                title: 'Create Success!',
-                text: '$error_msg',
+                title: 'Error!',
+                text: '$error_message',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+            </script>";
+}
+
+if ($success) {
+    echo "<script>
+          new PNotify({
+                title: 'Success!',
+                text: '$success_message',
                 type: 'success',
                 styling: 'bootstrap3'
             })

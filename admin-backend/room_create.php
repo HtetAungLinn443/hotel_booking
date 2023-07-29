@@ -6,7 +6,6 @@ require "../requires/check_authencation.php";
 require "../requires/include_function.php";
 
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-
 }
 $title = "Hotel Booking:: Room Create Page";
 require "../templates/cp_template_header.php";
@@ -31,7 +30,6 @@ require "../templates/cp_template_top_nav.php";
                     <div class="x_content">
                         <br />
                         <form action="<?php echo $cp_base_url; ?>view_create.php" method="POST" id="createForm">
-
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room
                                     Name<span class="required">*</span></label>
@@ -40,15 +38,13 @@ require "../templates/cp_template_top_nav.php";
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Occupation<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Occupation<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input type="number" class="form-control" name="name" placeholder="ex. 1" />
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Bed<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Bed<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <select name="" id="" class="form-control">
                                         <option value="">Choose Bed Type</option>
@@ -62,12 +58,11 @@ require "../templates/cp_template_top_nav.php";
                                 <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room
                                     Size<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <input type="number" class="form-control" name="name" placeholder="ex. 32''" />
+                                    <input type="number" class="form-control" name="name" placeholder="Enter room size" />
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room View<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room View<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <select name="" id="" class="form-control">
                                         <option value="">Choose View</option>
@@ -78,19 +73,107 @@ require "../templates/cp_template_top_nav.php";
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Occupation<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room Price Per
+                                    Day<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <input type="number" class="form-control" name="name" placeholder="ex. 1" />
+                                    <input type="number" class="form-control" name="name" placeholder="ex. 100$" />
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Occupation<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Extra Bed Price Per
+                                    Day<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <input type="number" class="form-control" name="name" placeholder="ex. 1" />
+                                    <input type="number" class="form-control" name="name" placeholder="ex. 30$" />
                                 </div>
                             </div>
+                            <div class="field item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room Amenity<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="field item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Thumbnail Image<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6">
+                                    <input type="file" class="form-control" name="name" accept="image/*" />
+                                </div>
+                            </div>
+
+                            <div class="field item form-group">
+
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room Amenity<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox" class="mr-2" name="" id=""> Room Amenity
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Room Images<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6">
+                                    <input type="file" class="form-control" name="name" multiple accept="image/*" />
+                                </div>
+                            </div>
+
                             <div class="ln_solid">
                                 <div class="form-group">
                                     <div class="col-md-6 offset-md-3">
@@ -108,25 +191,9 @@ require "../templates/cp_template_top_nav.php";
     </div>
 </div>
 
-</div>
 <!-- /page content -->
 <?php
 require "../templates/cp_template_footer.php";
-?>
-<!-- PNotify -->
-
-<?php
-if ($error) {
-    echo "<script>
-          new PNotify({
-                title: 'Error',
-                text: '$err_msg',
-                type: 'error',
-                styling: 'bootstrap3'
-            })
-          </script>";
-}
-
 ?>
 
 </html>
