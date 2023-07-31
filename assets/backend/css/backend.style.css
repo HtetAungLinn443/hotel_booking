@@ -6,3 +6,9 @@
 .label-error.hide {
     display: none;
 }
+
+.preview-wrapper {
+    width: 85%;
+    height: 250px;
+    border: 1px solid black;
+}

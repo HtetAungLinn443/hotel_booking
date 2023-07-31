@@ -101,15 +101,15 @@ require "../templates/cp_template_top_nav.php";
                                     <select class="form-control" name="type" id="selectForm">
                                         <option value="">Choose option</option>
                                         <option <?php if ($type == "0") {
-                                                    echo "selected";
-                                                } ?> value="0"> <?php echo $aminity_type[0] ?></option>
+    echo "selected";
+}?> value="0"> <?php echo $aminity_type[0] ?></option>
                                         <option <?php if ($type == "1") {
-                                                    echo "selected";
-                                                } ?> value="1"><?php echo $aminity_type[1] ?>
+    echo "selected";
+}?> value="1"><?php echo $aminity_type[1] ?>
                                         </option>
                                         <option <?php if ($type == "2") {
-                                                    echo "selected";
-                                                } ?> value="2"><?php echo $aminity_type[2] ?>
+    echo "selected";
+}?> value="2"><?php echo $aminity_type[2] ?>
                                         </option>
                                     </select>
                                 </div>
@@ -159,14 +159,14 @@ $(document).ready(function() {
         const view_name_length = view_name.length;
         const select_form = $("#selectForm").val();
         if (view_name == '') {
-            $("#viewName_error").text('Please fill hotel room view name');
+            $("#viewName_error").text('Please fill hotel room amenity name');
             $("#viewName_error").show();
             error = true;
         } else {
             $("#viewName_error").hide();
         }
         if (view_name_length < 2 && view_name != '') {
-            $("#viewName_error").text('Hotel room view name must be greater then two.');
+            $("#viewName_error").text('Hotel room amenity name must be greater then two.');
             $("#viewName_error").show();
             error = true;
         } else {
