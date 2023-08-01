@@ -34,7 +34,7 @@
     <!-- Custom Theme Style -->
     <link href="<?php echo $base_url ?>assets/backend/css/custom.min.css" rel="stylesheet">
 
-    <link href="<?php echo $base_url ?>assets/backend/css/backend.style.css?v=20230728" rel="stylesheet">
+    <link href="<?php echo $base_url ?>assets/backend/css/backend.style.css" rel="stylesheet">
 
     <style>
         label.error {

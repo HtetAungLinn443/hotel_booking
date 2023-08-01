@@ -53,8 +53,7 @@ require "../templates/cp_template_top_nav.php";
                     <div class="x_content">
                         <br />
 
-                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
-                            cellspacing="0" width="100%">
+                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th class="col-4">ID</th>
@@ -69,25 +68,22 @@ require "../templates/cp_template_top_nav.php";
                                         $db_id = htmlspecialchars($row['id']);
                                         $db_name = htmlspecialchars($row['name']);
                                 ?>
-                                <tr>
-
-                                    <td>
-                                        <?php echo $db_id; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $db_name; ?>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <a href="<?php echo $cp_base_url . "feature_edit.php?id=" . $db_id ?>"
-                                            class="btn btn-sm btn-info">
-                                            <i class="fa-regular fa-pen-to-square"></i>
-                                        </a>
-                                        <a href="<?php echo $cp_base_url . "feature_delete.php?id=" . $db_id ?>"
-                                            class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                        <tr>
+                                            <td>
+                                                <?php echo $db_id; ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $db_name; ?>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <a href="<?php echo $cp_base_url . "feature_edit.php?id=" . $db_id ?>" class="btn btn-sm btn-info">
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                </a>
+                                                <a href="<?php echo $cp_base_url . "feature_delete.php?id=" . $db_id ?>" class="btn btn-sm btn-danger">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
                                 <?php
                                     }
                                 }

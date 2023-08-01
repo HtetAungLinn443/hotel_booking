@@ -59,17 +59,17 @@ require "../templates/cp_template_top_nav.php";
                             <div class="thumbnail">
                                 <div class="image view view-first">
                                     <img style="width: 100%; display: block;" src="images/media.jpg" alt="image" />
-                                    <!-- <div class="mask">
-                                        <p>Your Text</p>
+                                    <div class="mask">
+                                        <p></p>
                                         <div class="tools tools-bottom">
                                             <a href="#"><i class="fa fa-link"></i></a>
                                             <a href="#"><i class="fa fa-pencil"></i></a>
                                             <a href="#"><i class="fa fa-times"></i></a>
                                         </div>
-                                    </div> -->
+                                    </div>
                                 </div>
                                 <div class="caption">
-                                    <p><?php echo $db_name;?></p>
+                                    <p><?php echo $db_name; ?></p>
                                 </div>
                             </div>
                         </div>
