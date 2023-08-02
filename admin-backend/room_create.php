@@ -5,7 +5,19 @@ require "../requires/connect.php";
 require "../requires/check_authencation.php";
 require "../requires/include_function.php";
 $table = 'room';
-
+$err_msg = '';
+$error = false;
+$room_name = '';
+$room_occupation = '';
+$room_bed = '';
+$room_size = '';
+$room_view = '';
+$room_price = '';
+$extra_bed_price = '';
+$description = '';
+$room_details = '';
+$room_amenity = [];
+$room_feature = [];
 // Bed list 
 $bed_table = 'bed_type';
 $select_column = ['id', 'name'];
@@ -58,9 +70,80 @@ $feature_row = $feature_res->num_rows;
 
 
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    var_dump($_POST);
-    exit();
+    // $thumb_file = $mysqli->real_escape_string($_POST['thumb_file']);
+    $room_name = $mysqli->real_escape_string($_POST['room_name']);
+    $room_occupation = $mysqli->real_escape_string($_POST['room_occupation']);
+    $room_bed = $mysqli->real_escape_string($_POST['room_bed']);
+    $room_size = $mysqli->real_escape_string($_POST['room_size']);
+    $room_view = $mysqli->real_escape_string($_POST['room_view']);
+    $room_price = $mysqli->real_escape_string($_POST['room_price']);
+    $extra_bed_price = $mysqli->real_escape_string($_POST['extra_bed_price']);
+    $description = $mysqli->real_escape_string($_POST['description']);
+    $room_details = $mysqli->real_escape_string($_POST['room_details']);
+    // $room_amenity = $_POST['room_amenity'];  
+    $process_error = false;
+    if (!isset($_POST['thumb_file'])) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Thumbnail Image <br/>';
+    }
+    if ($room_name == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Name <br/>';
+    }
+    if ($room_occupation == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Occupation <br/>';
+    }
+    if ($room_bed == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Choose Room Bed Type <br/>';
+    }
+    if ($room_size == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Size <br/>';
+    }
+    if ($room_view == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Choose Room View <br/>';
+    }
+    if ($room_price == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Price Per Day <br/>';
+    }
+    if ($extra_bed_price == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Extra Bed Price Per Day <br/>';
+    }
+    if ($description == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Description <br/>';
+    }
+    if ($room_details == '') {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Fill Room Details <br/>';
+    }
+    if (!isset($_POST['room_amenity'])) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Choose Room Amenities <br/>';
+    }
+    if (!isset($_POST['room_feature'])) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= 'Please Choose Room Special Features <br/>';
+    }
 }
+
 $title = "Hotel Booking:: Room Create Page";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
@@ -90,7 +173,7 @@ require "../templates/cp_template_top_nav.php";
                                     Thumbnail<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 d-flex justify-content-center">
                                     <div
-                                        class="preview-wrapper rounded p-3 d-flex justify-content-center align-items-center">
+                                        class="preview-wrapper rounded  d-flex justify-content-center align-items-center">
                                         <label class="thumb-upload btn btn-info">Upload
                                             Image</label>
                                         <div class="preview-container" style="display:none;">
@@ -98,7 +181,7 @@ require "../templates/cp_template_top_nav.php";
                                             <img src="" class="preview-img" />
                                         </div>
                                     </div>
-                                    <input type="file" name="thumb-file" id="thumb_file" style="display: none;"
+                                    <input type="file" name="thumb_file" id="thumb_file" value="" style="display: none;"
                                         accept="image/*">
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
@@ -110,7 +193,7 @@ require "../templates/cp_template_top_nav.php";
                                     Name<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" name="room_name" id="room_name"
-                                        placeholder="ex. Lake View" autofocus />
+                                        placeholder="ex. Lake View" autofocus value="<?php echo $room_name; ?>" />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error "
                                     id="room_name_error"></label>
@@ -121,7 +204,8 @@ require "../templates/cp_template_top_nav.php";
                                     for="room_occupation">Occupation<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input type="number" class="form-control" name="room_occupation"
-                                        id="room_occupation" placeholder="ex. 1" min="1" max="12" />
+                                        id="room_occupation" placeholder="ex. 1" min="1" max="12"
+                                        value="<?php echo $room_occupation; ?>" />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="room_occupation_error"></label>
@@ -135,8 +219,11 @@ require "../templates/cp_template_top_nav.php";
                                         <option value="">Choose Bed Type</option>
                                         <?php if ($bed_row >= 1) {
                                             while ($row = $bed_res->fetch_assoc()) {
-                                        ?>
-                                        <option value="<?php echo htmlspecialchars($row['id']) ?>">
+                                                ?>
+                                        <option value="<?php echo htmlspecialchars($row['id']) ?>" <?php if ($room_bed == $row['id']) {
+                                                       echo "selected";
+                                                   }
+                                                   ?>>
                                             <?php echo htmlspecialchars($row['name']) ?> </option>
                                         <?php
                                             }
@@ -152,7 +239,7 @@ require "../templates/cp_template_top_nav.php";
                                     Size<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input type="number" class="form-control" name="room_size" id="room_size"
-                                        placeholder="Enter room size" />
+                                        placeholder="Enter room size" value="<?php echo $room_size; ?>" />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="room_size_error"></label>
@@ -166,13 +253,15 @@ require "../templates/cp_template_top_nav.php";
                                         <option value="">Choose View</option>
                                         <?php if ($view_row >= 1) {
                                             while ($row = $view_res->fetch_assoc()) {
-                                        ?>
-                                        <option value="<?php echo htmlspecialchars($row['id']) ?>">
+                                                ?>
+                                        <option value="<?php echo htmlspecialchars($row['id']) ?>" <?php if ($room_view == $row['id']) {
+                                                               echo "selected";
+                                                           }
+                                                           ?>>
                                             <?php echo htmlspecialchars($row['name']) ?></option>
                                         <?php
                                             }
                                         }
-
                                         ?>
                                     </select>
                                 </div>
@@ -185,7 +274,7 @@ require "../templates/cp_template_top_nav.php";
                                     Per Day<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input type="number" class="form-control" name="room_price" id="room_price"
-                                        placeholder="ex. 100$" />
+                                        placeholder="ex. 100$" value="<?php echo $room_price?>" />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="room_price_error"></label>
@@ -197,7 +286,8 @@ require "../templates/cp_template_top_nav.php";
                                     Day<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input type="number" class="form-control" name="extra_bed_price"
-                                        id="extra_bed_price" placeholder="ex. 30$" />
+                                        id="extra_bed_price" placeholder="ex. 30$"
+                                        value="<?php echo $extra_bed_price ?>" />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="extra_bed_price_error"></label>
@@ -208,7 +298,7 @@ require "../templates/cp_template_top_nav.php";
                                     for="description">Description<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <textarea name="description" id="description" class="form-control"
-                                        placeholder="Description" rows="4"></textarea>
+                                        placeholder="Description" rows="4"><?php echo $description?></textarea>
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="description_error"></label>
@@ -219,7 +309,7 @@ require "../templates/cp_template_top_nav.php";
                                     for="room_details">Details<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <textarea name="room_details" id="room_details" class="form-control"
-                                        placeholder="Details" rows="4"></textarea>
+                                        placeholder="Details" rows="4"><?php echo $room_details ?></textarea>
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="room_details_error"></label>
@@ -231,7 +321,7 @@ require "../templates/cp_template_top_nav.php";
                                 <div class="col-md-6 col-sm-6">
                                     <?php
                                     foreach ($amenity_groups as $type => $amenities) {
-                                    ?>
+                                        ?>
                                     <div class="amenity-group">
 
                                         <h5 class="col-md-12">
@@ -245,11 +335,12 @@ require "../templates/cp_template_top_nav.php";
                                         </h5>
                                         <?php
                                             foreach ($amenities as $amenity) {
-                                            ?>
+                                                ?>
                                         <div class="col-md-6">
                                             <label>
                                                 <input type="checkbox" class="mr-2"
-                                                    value="<?php echo $amenity['id']; ?>" name="room_amenity[]">
+                                                    value="<?php echo $amenity['id']; ?>" name="room_amenity[]"
+                                                    <?php if(in_array($amenity['id'], $room_amenity))?>>
                                                 <?php echo $amenity['name']; ?>
                                             </label>
                                         </div>
@@ -275,7 +366,7 @@ require "../templates/cp_template_top_nav.php";
                                         while ($row = $feature_res->fetch_assoc()) {
                                             $feature_id = (int) ($row['id']);
                                             $feature_name = htmlspecialchars($row['name']);
-                                    ?>
+                                            ?>
                                     <div class="col-md-12">
                                         <label>
                                             <input type="checkbox" class="mr-2" value="<?php echo $feature_id; ?>"
@@ -294,7 +385,7 @@ require "../templates/cp_template_top_nav.php";
                             <div class="ln_solid">
                                 <div class="form-group">
                                     <div class="col-md-6 offset-md-3">
-                                        <button type='button' class="btn btn-primary" id="submit-btn">Submit</button>
+                                        <button type='submit' class="btn btn-primary" id="submit-btn">Submit</button>
                                         <button type='reset' class="btn btn-success" id="reset-btn">Reset</button>
                                         <input type="hidden" name="form-sub" value="1">
                                     </div>
@@ -312,103 +403,19 @@ require "../templates/cp_template_top_nav.php";
 <?php
 require "../templates/cp_template_footer.php";
 ?>
-<script>
-$(document).ready(function() {
-    $('.thumb-upload').click(function() {
-        $("#thumb_file").click();
-    })
+<script src="<?php echo $base_url ?>assets/backend/js/pages/room_create_update.js?v=202382"></script>
+<?php
+if ($error) {
+    echo "<script>
+          new PNotify({
+                title: 'Error',
+                text: '$err_msg',
+                type: 'error',
+                styling: 'bootstrap3'
+            })
+          </script>";
+}
 
-    $(".thumb-update").click(function() {
-        $("#thumb_file").click();
-    })
-
-    $("#thumb_file").change(function(event) {
-        var fileInput = event.target.files[0];
-        if (fileInput) {
-            var fileName = fileInput.name;
-            var fileExtension = fileName.split('.').pop().toLowerCase();
-            if (fileExtension == 'jpg' || fileExtension == 'jpeg' ||
-                fileExtension == 'png' || fileExtension == 'gif') {
-                $('.thumb-upload').hide();
-                $('.preview-container').show();
-                const objectURL = URL.createObjectURL(fileInput);
-                const $imageElement = $('.preview-container img').attr('src', objectURL);
-                $('.preview-container').append($imageElement);
-            } else {
-                $("#thumb_error").text('Image extension must be jpg, jpeg, png, gif!');
-                $("#thumb_error").show();
-            }
-        }
-    })
-    $("#submit-btn").click(function() {
-        let error = false;
-        const thumb_image = $('#thumb_file').val();
-        const room_name = $("#room_name").val();
-        const room_occupation = $("#room_occupation").val();
-        const room_bed = $("#room_bed").val();
-        const room_size = $("#room_size").val();
-        const room_view = $("#room_view").val();
-        const room_price = $("#room_price").val();
-        const extra_bed_price = $("#extra_bed_price").val();
-        const description = $("#description").val();
-        const room_details = $("#room_details").val();
-        const room_amenity = $("input[name='room_amenity[]']:checked").length;
-        const room_feature = $("input[name='room_feature[]']:checked").length;
-
-        // test function
-        function validateNull($id, $err_id, $msg) {
-            if ($id == '') {
-                $($err_id).text($msg);
-                $($err_id).show();
-                error = true;
-            }
-        }
-
-        function validateCheckbox($id, $err_id, $msg) {
-            if ($id == 0) {
-                $($err_id).text($msg);
-                $($err_id).show();
-                error = true;
-            }
-        }
-        validateNull(thumb_image, "#thumb_error", "Please fill hotel room thumbnail image!");
-        validateNull(room_name, "#room_name_error", "Please fill hotel room name!");
-        validateNull(room_occupation, "#room_occupation_error", "Please fill hotel room occupation!");
-        validateNull(room_bed, "#room_bed_error", "Please choose hotel room bed type!");
-        validateNull(room_size, "#room_size_error", "Please fill hotel room size!");
-        validateNull(room_view, "#room_view_error", "Please choose hotel room view!");
-        validateNull(room_price, "#room_price_error", "Please fill hotel room price per day!");
-        validateNull(extra_bed_price, "#extra_bed_price_error",
-            "Please fill hotel room extra bed price per day!");
-        validateNull(description, "#description_error", "Please fill hotel room description!");
-        validateNull(room_details, "#room_details_error", "Please fill hotel room details!");
-
-        validateCheckbox(room_amenity, "#room_amenity_error", "Please check hotel room amenity!")
-        validateCheckbox(room_feature, "#room_feature_error",
-            "Please check hotel room special feature!")
-        // if (room_name.length <= 2 && room_name != '') {
-        //     $("#room_name_error").text('Hotel room name must be greater then two!');
-        //     $("#room_name_error").show();
-        //     error = true;
-        // }
-
-        // if (room_occupation > 13 && room_occupation != '') {
-        //     $("#room_occupation_error").text('Please fill hotel room occupation!');
-        //     $("#room_occupation_error").show();
-        //     error = true;
-        // }
-
-        if (!error) {
-            // alert('submit');
-            $('#createForm').submit();
-        }
-
-    })
-
-    $("#reset-btn").click(function() {
-        $(".label-error").hide();
-    })
-})
-</script>
+?>
 
 </html>

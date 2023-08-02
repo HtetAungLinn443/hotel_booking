@@ -101,38 +101,33 @@ require "../templates/cp_template_top_nav.php";
                         <form action="<?php echo $cp_base_url; ?>amenity_edit.php" method="POST" id="createForm">
 
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span class="required">*</span></label>
 
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="name" value="<?php echo $name; ?>"
-                                        required="required" id="amenityName" />
+                                    <input class="form-control" name="name" value="<?php echo $name; ?>" required="required" id="amenityName" />
                                 </div>
-                                <label class="col-form-label col-md-3 col-sm-3 label-error hide"
-                                    id="amenityName_error"></label>
+                                <label class="col-form-label col-md-3 col-sm-3 label-error hide" id="amenityName_error"></label>
                             </div>
                             <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Type<span
-                                        class="required">*</span></label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Type<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <select class="form-control" name="type" id="selectForm">
                                         <option value="">Choose option</option>
                                         <option <?php if ($type == "0") {
-    echo "selected";
-}?> value="0"> <?php echo $aminity_type[0] ?>
+                                                    echo "selected";
+                                                } ?> value="0"> <?php echo $aminity_type[0] ?>
                                         </option>
                                         <option <?php if ($type == "1") {
-    echo "selected";
-}?> value="1"><?php echo $aminity_type[1] ?>
+                                                    echo "selected";
+                                                } ?> value="1"><?php echo $aminity_type[1] ?>
                                         </option>
                                         <option <?php if ($type == "2") {
-    echo "selected";
-}?> value="2"><?php echo $aminity_type[2] ?>
+                                                    echo "selected";
+                                                } ?> value="2"><?php echo $aminity_type[2] ?>
                                         </option>
                                     </select>
                                 </div>
-                                <label class="col-form-label col-md-3 col-sm-3 label-error hide"
-                                    id="selectForm_error"></label>
+                                <label class="col-form-label col-md-3 col-sm-3 label-error hide" id="selectForm_error"></label>
                             </div>
                             <div class="ln_solid">
                                 <div class="form-group">
@@ -170,48 +165,48 @@ if ($error) {
 
 ?>
 <script>
-$(document).ready(function() {
-    // Submit Btn
-    $("#submit-btn").click(function() {
-        let error = false;
-        const amenity_name = $("#amenityName").val();
-        const amenity_name_length = amenity_name.length;
-        const select_form = $("#selectForm").val();
-        if (amenity_name == '') {
-            $("#amenityName_error").text('Please fill hotel room amenity name');
-            $("#amenityName_error").show();
-            error = true;
-        }
-        if (amenity_name_length < 2 && amenity_name != '') {
-            $("#amenityName_error").text('Hotel room amenity name must be greater then two.');
-            $("#amenityName_error").show();
-            error = true;
-        }
-        if (amenity_name_length > 100 && amenity_name != '') {
-            $("#amenityName_error").text('Hotel room amenity name must be less then eighty.');
-            $("#amenityName_error").show();
-            error = true;
-        }
-        if (select_form == '') {
-            $("#selectForm_error").text('Please choose anemity type');
-            $("#selectForm_error").show();
-            error = true;
-        }
-        if (!error) {
+    $(document).ready(function() {
+        // Submit Btn
+        $("#submit-btn").click(function() {
+            let error = false;
+            const amenity_name = $("#amenityName").val();
+            const amenity_name_length = amenity_name.length;
+            const select_form = $("#selectForm").val();
+            if (amenity_name == '') {
+                $("#amenityName_error").text('Please fill hotel room amenity name');
+                $("#amenityName_error").show();
+                error = true;
+            }
+            if (amenity_name_length < 2 && amenity_name != '') {
+                $("#amenityName_error").text('Hotel room amenity name must be greater then two.');
+                $("#amenityName_error").show();
+                error = true;
+            }
+            if (amenity_name_length > 100 && amenity_name != '') {
+                $("#amenityName_error").text('Hotel room amenity name must be less then eighty.');
+                $("#amenityName_error").show();
+                error = true;
+            }
+            if (select_form == '') {
+                $("#selectForm_error").text('Please choose anemity type');
+                $("#selectForm_error").show();
+                error = true;
+            }
+            if (!error) {
+                $("#amenityName_error").hide();
+                $("#selectForm_error").hide();
+
+                $("#createForm").submit();
+            }
+        });
+
+        // reset Btn
+        $("#reset-btn").click(function() {
             $("#amenityName_error").hide();
             $("#selectForm_error").hide();
-
-            $("#createForm").submit();
-        }
-    });
-
-    // reset Btn
-    $("#reset-btn").click(function() {
-        $("#amenityName_error").hide();
-        $("#selectForm_error").hide();
-        $('#viewName').val('');
+            $('#viewName').val('');
+        })
     })
-})
 </script>
 
 </html>
