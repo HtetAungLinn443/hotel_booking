@@ -108,3 +108,83 @@ function selectQueryById($id, $select_column, $table, $mysqli)
     $result_all = $mysqli->query($sql);
     return $result_all;
 }
+
+
+function checkImageExtension($fileName, $fileTempPath)
+{
+    $return = [];
+
+    $allowFileType = ['png', 'jpg', 'jpeg', 'gif'];
+    $explode = explode('.', $fileName);
+    $extension = end($explode);
+    if (in_array($extension, $allowFileType)) {
+        if (getimagesize($fileTempPath)) {
+            $return['error'] = false;
+            $return['extension'] = $extension;
+            return $return;
+        } else {
+            $return['error'] = true;
+            return $return;
+        }
+    } else {
+        $return['error'] = true;
+        return $return;
+    }
+}
+
+// Image crop and resize
+function cropAndResizeImage($sourceFile, $destinationFile, $cropX, $cropY, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight)
+{
+    $imageInfo = getimagesize($sourceFile);
+    $sourceWidth = $imageInfo[0];
+    $sourceHeight = $imageInfo[1];
+    $sourceType = $imageInfo['mime'];
+
+    // $sourceWidth =
+    // Get the image information
+
+    // Create a new image resource based on the source image type
+    switch ($sourceType) {
+        case 'image/jpeg':
+
+            $sourceImage = imagecreatefromjpeg($sourceFile);
+            break;
+        case 'image/png':
+            $sourceImage = imagecreatefrompng($sourceFile);
+            break;
+        case 'image/gif':
+            $sourceImage = imagecreatefromgif($sourceFile);
+            break;
+        default:
+            // Unsupported image type
+            return false;
+    }
+
+    // Create a new image resource for the cropped and resized image
+    $newImage = imagecreatetruecolor($resizeWidth, $resizeHeight);
+
+    // Crop the image
+    imagecopyresampled($newImage, $sourceImage, 0, 0, $cropX, $cropY, $resizeWidth, $resizeHeight, $cropWidth, $cropHeight);
+
+    // Save the cropped and resized image to the destination file
+    switch ($sourceType) {
+        case 'image/jpeg':
+            imagejpeg($newImage, $destinationFile, 90); // Adjust the quality (0-100) as needed
+            break;
+        case 'image/png':
+            imagepng($newImage, $destinationFile);
+            break;
+        case 'image/gif':
+            imagegif($newImage, $destinationFile);
+            break;
+        default:
+            // Unsupported image type
+            return false;
+    }
+
+    // Free up memory by destroying the image resources
+    imagedestroy($sourceImage);
+    imagedestroy($newImage);
+
+    return true;
+}
