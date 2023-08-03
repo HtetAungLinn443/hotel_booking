@@ -69,7 +69,7 @@ $feature_res = listQuery($select_column, $feature_table, $mysqli, $order_by);
 $feature_row = $feature_res->num_rows;
 
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
-    // $thumb_file = $mysqli->real_escape_string($_POST['thumb_file']);
+
     $room_name = $mysqli->real_escape_string($_POST['room_name']);
     $room_occupation = $mysqli->real_escape_string($_POST['room_occupation']);
     $room_bed = $mysqli->real_escape_string($_POST['room_bed']);
@@ -79,13 +79,31 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $extra_bed_price = $mysqli->real_escape_string($_POST['extra_bed_price']);
     $description = $mysqli->real_escape_string($_POST['description']);
     $room_details = $mysqli->real_escape_string($_POST['room_details']);
-
     $process_error = false;
-    // if (!isset($_POST['thumb_file'])) {
-    //     $process_error = true;
-    //     $error = true;
-    //     $err_msg .= 'Please Fill Room Thumbnail Image <br/>';
-    // }
+    if ($_FILES['thumb_file']['name'] != '') {
+        $image_upload = false;
+        $file = $_FILES['thumb_file'];
+        $fileName = $file['name'];
+        $fileType = $file['type'];
+        $fileTempPath = $file['tmp_name'];
+        $fileError = $file['error'];
+        $allowFileType = ['png', 'jpg', 'jpeg', 'gif'];
+        $explode = explode('.', $fileName);
+        $extension = end($explode);
+        if (in_array($extension, $allowFileType)) {
+            if (getimagesize($fileTempPath)) {
+                $image_upload = true;
+                $uniqueName = date('Y-m-d_H-i-s') . uniqid() . '.' . $extension;
+            } else {
+                $error = true;
+                $err_msg .= "<li class='text-danger'>Invalid Image file! </li>";
+            }
+
+        } else {
+            $error = true;
+            $err_msg .= "<li class='text-danger'>File allow png, jpg, jpeg and gif Files Only! </li>";
+        }
+    }
     if ($room_name == '') {
         $process_error = true;
         $error = true;
@@ -160,55 +178,132 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     if (!$process_error) {
         $today_date = date('Y-m-d H:i:s');
         $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-
-        $insert_room_data = array(
-            'name' => "'$room_name'",
-            'size' => "'$room_size'",
-            'occupancy' => "'$room_occupation'",
-            'bad_type_id' => "'$room_bed'",
-            'view_id' => "'$room_view'",
-            'description' => "'$description'",
-            'details' => "'$room_details'",
-            'price_per_day' => "'$room_price'",
-            'extra_bed_price_per_day' => "'$extra_bed_price'",
-            'created_at' => "'$today_date'",
-            'created_by' => "'$user_id'",
-            'updated_at' => "'$today_date'",
-            'updated_by' => "'$user_id'",
-        );
-        $room_result = insertQuery($insert_room_data, $table, $mysqli);
-
-        if ($room_result) {
-            $room_id = $mysqli->insert_id;
-            //  insert amenity data
-            foreach ($room_amenity as $amenity) {
-                $insert_amenity_data = array(
-                    'room_id' => "'$room_id'",
-                    'amenity_id' => "'$amenity'",
-                    'created_at' => "'$today_date'",
-                    'created_by' => "'$user_id'",
-                    'updated_at' => "'$today_date'",
-                    'updated_by' => "'$user_id'",
-                );
-                insertQuery($insert_amenity_data, 'room_amenity', $mysqli);
-            }
-
-            // insert special feature
-            foreach ($room_feature as $feature) {
-                $insert_feature_data = array(
-                    'room_id' => "'$room_id'",
-                    'special_feature_id' => "'$feature'",
-                    'created_at' => "'$today_date'",
-                    'created_by' => "'$user_id'",
-                    'updated_at' => "'$today_date'",
-                    'updated_by' => "'$user_id'",
-                );
-                insertQuery($insert_feature_data, 'room_special_feature', $mysqli);
-            }
-            $url = $cp_base_url . "room_list.php?msg=success";
-            header("Refresh: 0; url=$url");
+        // var_dump($image_upload);
+        // exit();
+        if ($image_upload == false) {
+            $insert_room_data = array(
+                'name' => "'$room_name'",
+                'size' => "'$room_size'",
+                'occupancy' => "'$room_occupation'",
+                'bad_type_id' => "'$room_bed'",
+                'view_id' => "'$room_view'",
+                'description' => "'$description'",
+                'details' => "'$room_details'",
+                'price_per_day' => "'$room_price'",
+                'extra_bed_price_per_day' => "'$extra_bed_price'",
+                'created_at' => "'$today_date'",
+                'created_by' => "'$user_id'",
+                'updated_at' => "'$today_date'",
+                'updated_by' => "'$user_id'",
+            );
+            $room_result = insertQuery($insert_room_data, $table, $mysqli);
+            echo $room_result;
             exit();
+            if ($room_result) {
+                $room_id = $mysqli->insert_id;
+                //  insert amenity data
+                foreach ($room_amenity as $amenity) {
+                    $insert_amenity_data = array(
+                        'room_id' => "'$room_id'",
+                        'amenity_id' => "'$amenity'",
+                        'created_at' => "'$today_date'",
+                        'created_by' => "'$user_id'",
+                        'updated_at' => "'$today_date'",
+                        'updated_by' => "'$user_id'",
+                    );
+                    insertQuery($insert_amenity_data, 'room_amenity', $mysqli);
+                }
+
+                // insert special feature
+                foreach ($room_feature as $feature) {
+                    $insert_feature_data = array(
+                        'room_id' => "'$room_id'",
+                        'special_feature_id' => "'$feature'",
+                        'created_at' => "'$today_date'",
+                        'created_by' => "'$user_id'",
+                        'updated_at' => "'$today_date'",
+                        'updated_by' => "'$user_id'",
+                    );
+                    insertQuery($insert_feature_data, 'room_special_feature', $mysqli);
+                }
+
+            }
+            // $url = $cp_base_url . "room_list.php?msg=success";
+            // header("Refresh: 0; url=$url");
+            // exit(); 
+        } else {
+            $insert_room_data = array(
+                'name' => "'$room_name'",
+                'size' => "'$room_size'",
+                'occupancy' => "'$room_occupation'",
+                'bad_type_id' => "'$room_bed'",
+                'view_id' => "'$room_view'",
+                'description' => "'$description'",
+                'details' => "'$room_details'",
+                'price_per_day' => "'$room_price'",
+                'extra_bed_price_per_day' => "'$extra_bed_price'",
+                'thumbnail_img' => "'$uniqueName'",
+                'created_at' => "'$today_date'",
+                'created_by' => "'$user_id'",
+                'updated_at' => "'$today_date'",
+                'updated_by' => "'$user_id'",
+            );
+            $room_result = insertQuery($insert_room_data, $table, $mysqli);
+            var_dump($room_result);
+            exit();
+            if ($room_result) {
+                $room_id = $mysqli->insert_id;
+                //  insert amenity data
+                foreach ($room_amenity as $amenity) {
+                    $insert_amenity_data = array(
+                        'room_id' => "'$room_id'",
+                        'amenity_id' => "'$amenity'",
+                        'created_at' => "'$today_date'",
+                        'created_by' => "'$user_id'",
+                        'updated_at' => "'$today_date'",
+                        'updated_by' => "'$user_id'",
+                    );
+                    insertQuery($insert_amenity_data, 'room_amenity', $mysqli);
+                }
+
+                // insert special feature
+                foreach ($room_feature as $feature) {
+                    $insert_feature_data = array(
+                        'room_id' => "'$room_id'",
+                        'special_feature_id' => "'$feature'",
+                        'created_at' => "'$today_date'",
+                        'created_by' => "'$user_id'",
+                        'updated_at' => "'$today_date'",
+                        'updated_by' => "'$user_id'",
+                    );
+                    insertQuery($insert_feature_data, 'room_special_feature', $mysqli);
+                }
+                $filePath = '../assets/upload/' . $room_id . '/';
+                if (!file_exists($filePath)) {
+                    if (!mkdir($filePath, 0777, true)) {
+                        die('Failed to create directory.');
+                    }
+                }
+                if (file_exists($fileTempPath)) {
+                    if (move_uploaded_file($fileTempPath, $filePath . $uniqueName)) {
+
+                    } else {
+                        $error = true;
+                        $error_msg .= "Failed to upload file!";
+                    }
+                } else {
+                    $error = true;
+                    $error_msg .= "File does not exist!";
+                }
+            }
+
+
+            // $url = $cp_base_url . "room_list.php?msg=success";
+            // header("Refresh: 0; url=$url");
+            // exit();
         }
+
+
     }
 }
 
