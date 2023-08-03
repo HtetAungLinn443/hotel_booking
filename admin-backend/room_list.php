@@ -55,33 +55,32 @@ require "../templates/cp_template_top_nav.php";
                                 $db_id = htmlspecialchars($row['id']);
                                 $db_name = htmlspecialchars($row['name']);
                         ?>
-                        <div class="col-md-55">
-                            <div class="thumbnail">
-                                <div class="image view view-first">
-                                    <img style="width: 100%; display: block;" src="images/media.jpg" alt="image" />
-                                    <div class="mask">
-                                        <p></p>
-                                        <div class="tools tools-bottom">
-                                            <a href="#"><i class="fa fa-link"></i></a>
-                                            <a href="#"><i class="fa fa-pencil"></i></a>
-                                            <a href="#"><i class="fa fa-times"></i></a>
+                                <div class="col-md-55">
+                                    <div class="thumbnail">
+                                        <div class="image view view-first">
+                                            <img style="width: 100%; display: block;" src="images/media.jpg" alt="image" />
+                                            <div class="mask">
+                                                <p></p>
+                                                <div class="tools tools-bottom">
+                                                    <a href="#"><i class="fa fa-link"></i></a>
+                                                    <a href="#"><i class="fa fa-pencil"></i></a>
+                                                    <a href="#"><i class="fa fa-times"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="caption">
+                                            <p><?php echo $db_name; ?></p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="caption">
-                                    <p><?php echo $db_name; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
+                            <?php
                             }
                         } else {
                             ?>
-                        <h2 class="text-white bg-warning p-4 rounded w-100 text-center m-5 h2">There is No Room.</h2>
+                            <h2 class="text-white bg-warning p-4 rounded w-100 text-center m-5 h2">There is No Room.</h2>
                         <?php
                         }
                         ?>
-
                     </div>
                 </div>
             </div>

@@ -18,7 +18,7 @@ $description = '';
 $room_details = '';
 $room_amenity = [];
 $room_feature = [];
-// Bed list 
+// Bed list
 $bed_table = 'bed_type';
 $select_column = ['id', 'name'];
 $order_by = [
@@ -68,7 +68,6 @@ $order_by = [
 $feature_res = listQuery($select_column, $feature_table, $mysqli, $order_by);
 $feature_row = $feature_res->num_rows;
 
-
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     // $thumb_file = $mysqli->real_escape_string($_POST['thumb_file']);
     $room_name = $mysqli->real_escape_string($_POST['room_name']);
@@ -80,18 +79,29 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $extra_bed_price = $mysqli->real_escape_string($_POST['extra_bed_price']);
     $description = $mysqli->real_escape_string($_POST['description']);
     $room_details = $mysqli->real_escape_string($_POST['room_details']);
-    // $room_amenity = $_POST['room_amenity'];  
+
     $process_error = false;
-    if (!isset($_POST['thumb_file'])) {
-        $process_error = true;
-        $error = true;
-        $err_msg .= 'Please Fill Room Thumbnail Image <br/>';
-    }
+    // if (!isset($_POST['thumb_file'])) {
+    //     $process_error = true;
+    //     $error = true;
+    //     $err_msg .= 'Please Fill Room Thumbnail Image <br/>';
+    // }
     if ($room_name == '') {
         $process_error = true;
         $error = true;
         $err_msg .= 'Please Fill Room Name <br/>';
     }
+
+    $check_colume = array(
+        'name' => $room_name,
+    );
+    $name_unique = checkUniqueValue($check_colume, $table, $mysqli);
+    if ($name_unique >= 1) {
+        $process_error = true;
+        $error = true;
+        $err_msg .= "This " . $room_name . " Name is Alreadey Exit";
+    }
+
     if ($room_occupation == '') {
         $process_error = true;
         $error = true;
@@ -136,11 +146,69 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $process_error = true;
         $error = true;
         $err_msg .= 'Please Choose Room Amenities <br/>';
+    } else {
+        $room_amenity = $_POST['room_amenity'];
     }
     if (!isset($_POST['room_feature'])) {
         $process_error = true;
         $error = true;
         $err_msg .= 'Please Choose Room Special Features <br/>';
+    } else {
+        $room_feature = $_POST['room_feature'];
+    }
+
+    if (!$process_error) {
+        $today_date = date('Y-m-d H:i:s');
+        $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
+
+        $insert_room_data = array(
+            'name' => "'$room_name'",
+            'size' => "'$room_size'",
+            'occupancy' => "'$room_occupation'",
+            'bad_type_id' => "'$room_bed'",
+            'view_id' => "'$room_view'",
+            'description' => "'$description'",
+            'details' => "'$room_details'",
+            'price_per_day' => "'$room_price'",
+            'extra_bed_price_per_day' => "'$extra_bed_price'",
+            'created_at' => "'$today_date'",
+            'created_by' => "'$user_id'",
+            'updated_at' => "'$today_date'",
+            'updated_by' => "'$user_id'",
+        );
+        $room_result = insertQuery($insert_room_data, $table, $mysqli);
+
+        if ($room_result) {
+            $room_id = $mysqli->insert_id;
+            //  insert amenity data
+            foreach ($room_amenity as $amenity) {
+                $insert_amenity_data = array(
+                    'room_id' => "'$room_id'",
+                    'amenity_id' => "'$amenity'",
+                    'created_at' => "'$today_date'",
+                    'created_by' => "'$user_id'",
+                    'updated_at' => "'$today_date'",
+                    'updated_by' => "'$user_id'",
+                );
+                insertQuery($insert_amenity_data, 'room_amenity', $mysqli);
+            }
+
+            // insert special feature
+            foreach ($room_feature as $feature) {
+                $insert_feature_data = array(
+                    'room_id' => "'$room_id'",
+                    'special_feature_id' => "'$feature'",
+                    'created_at' => "'$today_date'",
+                    'created_by' => "'$user_id'",
+                    'updated_at' => "'$today_date'",
+                    'updated_by' => "'$user_id'",
+                );
+                insertQuery($insert_feature_data, 'room_special_feature', $mysqli);
+            }
+            $url = $cp_base_url . "room_list.php?msg=success";
+            header("Refresh: 0; url=$url");
+            exit();
+        }
     }
 }
 
@@ -220,12 +288,12 @@ require "../templates/cp_template_top_nav.php";
                                         <?php if ($bed_row >= 1) {
                                             while ($row = $bed_res->fetch_assoc()) {
                                                 ?>
-                                        <option value="<?php echo htmlspecialchars($row['id']) ?>" <?php if ($room_bed == $row['id']) {
+                                                <option value="<?php echo htmlspecialchars($row['id']) ?>" <?php if ($room_bed == $row['id']) {
                                                        echo "selected";
                                                    }
                                                    ?>>
-                                            <?php echo htmlspecialchars($row['name']) ?> </option>
-                                        <?php
+                                                    <?php echo htmlspecialchars($row['name']) ?> </option>
+                                                <?php
                                             }
                                         } ?>
                                     </select>
@@ -254,12 +322,12 @@ require "../templates/cp_template_top_nav.php";
                                         <?php if ($view_row >= 1) {
                                             while ($row = $view_res->fetch_assoc()) {
                                                 ?>
-                                        <option value="<?php echo htmlspecialchars($row['id']) ?>" <?php if ($room_view == $row['id']) {
-                                                               echo "selected";
-                                                           }
-                                                           ?>>
-                                            <?php echo htmlspecialchars($row['name']) ?></option>
-                                        <?php
+                                                <option value="<?php echo htmlspecialchars($row['id']) ?>" <?php if ($room_view == $row['id']) {
+                                                       echo "selected";
+                                                   }
+                                                   ?>>
+                                                    <?php echo htmlspecialchars($row['name']) ?></option>
+                                                <?php
                                             }
                                         }
                                         ?>
@@ -274,7 +342,7 @@ require "../templates/cp_template_top_nav.php";
                                     Per Day<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input type="number" class="form-control" name="room_price" id="room_price"
-                                        placeholder="ex. 100$" value="<?php echo $room_price?>" />
+                                        placeholder="ex. 100$" value="<?php echo $room_price ?>" />
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="room_price_error"></label>
@@ -298,7 +366,7 @@ require "../templates/cp_template_top_nav.php";
                                     for="description">Description<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <textarea name="description" id="description" class="form-control"
-                                        placeholder="Description" rows="4"><?php echo $description?></textarea>
+                                        placeholder="Description" rows="4"><?php echo $description ?></textarea>
                                 </div>
                                 <label class="col-form-label col-md-3 col-sm-3 label-error hide"
                                     id="description_error"></label>
@@ -322,33 +390,34 @@ require "../templates/cp_template_top_nav.php";
                                     <?php
                                     foreach ($amenity_groups as $type => $amenities) {
                                         ?>
-                                    <div class="amenity-group">
+                                        <div class="amenity-group">
 
-                                        <h5 class="col-md-12">
-                                            <?php if ($type == 0) {
+                                            <h5 class="col-md-12">
+                                                <?php if ($type == 0) {
                                                     echo 'General';
                                                 } elseif ($type == 1) {
                                                     echo 'Bathroom';
                                                 } else {
                                                     echo 'Other';
                                                 } ?>
-                                        </h5>
-                                        <?php
+                                            </h5>
+                                            <?php
                                             foreach ($amenities as $amenity) {
                                                 ?>
-                                        <div class="col-md-6">
-                                            <label>
-                                                <input type="checkbox" class="mr-2"
-                                                    value="<?php echo $amenity['id']; ?>" name="room_amenity[]"
-                                                    <?php if(in_array($amenity['id'], $room_amenity))?>>
-                                                <?php echo $amenity['name']; ?>
-                                            </label>
-                                        </div>
-                                        <?php
+                                                <div class="col-md-6">
+                                                    <label>
+                                                        <input type="checkbox" class="mr-2"
+                                                            value="<?php echo $amenity['id']; ?>" name="room_amenity[]" <?php if (in_array($amenity['id'], $room_amenity)) {
+                                                                   echo "checked";
+                                                               } ?>>
+                                                        <?php echo $amenity['name']; ?>
+                                                    </label>
+                                                </div>
+                                                <?php
                                             }
                                             ?>
-                                    </div>
-                                    <?php
+                                        </div>
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -367,13 +436,15 @@ require "../templates/cp_template_top_nav.php";
                                             $feature_id = (int) ($row['id']);
                                             $feature_name = htmlspecialchars($row['name']);
                                             ?>
-                                    <div class="col-md-12">
-                                        <label>
-                                            <input type="checkbox" class="mr-2" value="<?php echo $feature_id; ?>"
-                                                name="room_feature[]"><?php echo $feature_name; ?>
-                                        </label>
-                                    </div>
-                                    <?php
+                                            <div class="col-md-12">
+                                                <label>
+                                                    <input type="checkbox" class="mr-2" value="<?php echo $feature_id; ?>"
+                                                        name="room_feature[]" <?php if (in_array($feature_id, $room_feature)) {
+                                                            echo "checked";
+                                                        } ?>><?php echo $feature_name; ?>
+                                                </label>
+                                            </div>
+                                            <?php
                                         }
                                     }
                                     ?>
