@@ -1,0 +1,12 @@
+Options -Indexes
+
+# Deny access to directory listing and folder paths
+RewriteEngine On
+RewriteRule ^folder/ - [F]
+
+# Allow access to PHP files
+<FilesMatch "\.php$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+

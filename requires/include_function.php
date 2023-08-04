@@ -188,3 +188,33 @@ function cropAndResizeImage($sourceFile, $destinationFile, $cropX, $cropY, $crop
 
     return true;
 }
+
+// add wartermark photo
+function addWatermarkToImage($originalImagePath, $outputImagePath)
+{
+    $watermarkImagePath = '../assets/images/wartermark.png';
+    // Load the original image and the watermark image
+    $originalImage = imagecreatefromstring(file_get_contents($originalImagePath));
+    $watermarkImage = imagecreatefromstring(file_get_contents($watermarkImagePath));
+
+    // Get the dimensions of the original image and watermark image
+    $originalWidth = imagesx($originalImage);
+    $originalHeight = imagesy($originalImage);
+    $watermarkWidth = imagesx($watermarkImage);
+    $watermarkHeight = imagesy($watermarkImage);
+
+    // Calculate the position to place the watermark at the bottom right corner with a margin of 10 pixels
+    $margin = 1;
+    $watermarkX = $originalWidth - $watermarkWidth - $margin;
+    $watermarkY = $originalHeight - $watermarkHeight - $margin;
+
+    // Merge the original image and the watermark image
+    imagecopy($originalImage, $watermarkImage, $watermarkX, $watermarkY, 0, 0, $watermarkWidth, $watermarkHeight);
+
+    // Save the image with the watermark to the output path
+    imagejpeg($originalImage, $outputImagePath);
+
+    // Free up memory by destroying the image resources
+    imagedestroy($originalImage);
+    imagedestroy($watermarkImage);
+}
