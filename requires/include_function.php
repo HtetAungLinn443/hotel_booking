@@ -133,58 +133,27 @@ function checkImageExtension($fileName, $fileTempPath)
 }
 
 // Image crop and resize
-function cropAndResizeImage($sourceFile, $destinationFile, $cropX, $cropY, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight)
+function cropAndResizeImage($sourcePath, $destinationPath, $width, $height)
 {
-    $imageInfo = getimagesize($sourceFile);
-    $sourceWidth = $imageInfo[0];
-    $sourceHeight = $imageInfo[1];
+    $imageInfo = getimagesize($sourcePath);
+    $originalWidth = $imageInfo[0];
+    $originalHeight = $imageInfo[1];
     $sourceType = $imageInfo['mime'];
 
-    // $sourceWidth =
-    // Get the image information
+    $canvas = imagecreatetruecolor($width, $height);
 
-    // Create a new image resource based on the source image type
-    switch ($sourceType) {
-        case 'image/jpeg':
+    // Create a new image from the source file
+    $sourceImage = imagecreatefromjpeg($sourcePath); // Change the function based on your image type (jpeg, png, gif, etc.)
 
-            $sourceImage = imagecreatefromjpeg($sourceFile);
-            break;
-        case 'image/png':
-            $sourceImage = imagecreatefrompng($sourceFile);
-            break;
-        case 'image/gif':
-            $sourceImage = imagecreatefromgif($sourceFile);
-            break;
-        default:
-            // Unsupported image type
-            return false;
-    }
+    // Resize the image
+    imagecopyresampled($canvas, $sourceImage, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
 
-    // Create a new image resource for the cropped and resized image
-    $newImage = imagecreatetruecolor($resizeWidth, $resizeHeight);
+    // Save the resized image to the destination
+    imagejpeg($canvas, $destinationPath); // Change the function based on your desired output image format (jpeg, png, gif, etc.)
 
-    // Crop the image
-    imagecopyresampled($newImage, $sourceImage, 0, 0, $cropX, $cropY, $resizeWidth, $resizeHeight, $cropWidth, $cropHeight);
-
-    // Save the cropped and resized image to the destination file
-    switch ($sourceType) {
-        case 'image/jpeg':
-            imagejpeg($newImage, $destinationFile, 90); // Adjust the quality (0-100) as needed
-            break;
-        case 'image/png':
-            imagepng($newImage, $destinationFile);
-            break;
-        case 'image/gif':
-            imagegif($newImage, $destinationFile);
-            break;
-        default:
-            // Unsupported image type
-            return false;
-    }
-
-    // Free up memory by destroying the image resources
+    // Free up memory
+    imagedestroy($canvas);
     imagedestroy($sourceImage);
-    imagedestroy($newImage);
 
     return true;
 }
@@ -193,28 +162,22 @@ function cropAndResizeImage($sourceFile, $destinationFile, $cropX, $cropY, $crop
 function addWatermarkToImage($originalImagePath, $outputImagePath)
 {
     $watermarkImagePath = '../assets/images/wartermark.png';
-    // Load the original image and the watermark image
     $originalImage = imagecreatefromstring(file_get_contents($originalImagePath));
     $watermarkImage = imagecreatefromstring(file_get_contents($watermarkImagePath));
 
-    // Get the dimensions of the original image and watermark image
     $originalWidth = imagesx($originalImage);
     $originalHeight = imagesy($originalImage);
     $watermarkWidth = imagesx($watermarkImage);
     $watermarkHeight = imagesy($watermarkImage);
 
-    // Calculate the position to place the watermark at the bottom right corner with a margin of 10 pixels
     $margin = 1;
     $watermarkX = $originalWidth - $watermarkWidth - $margin;
     $watermarkY = $originalHeight - $watermarkHeight - $margin;
 
-    // Merge the original image and the watermark image
     imagecopy($originalImage, $watermarkImage, $watermarkX, $watermarkY, 0, 0, $watermarkWidth, $watermarkHeight);
 
-    // Save the image with the watermark to the output path
     imagejpeg($originalImage, $outputImagePath);
 
-    // Free up memory by destroying the image resources
     imagedestroy($originalImage);
     imagedestroy($watermarkImage);
 }

@@ -5,3 +5,7 @@ $site_config['name']    = "Softguide Hotel Booking";
 $site_config['email']   = "softguide@gmail.com";
 $site_config['key']     = "j7K89Lt35P";
 $aminity_type           = ['General', 'Bathroom', 'Other'];
+$thumb_width            = 300;
+$thumb_hight            = 200;
+$upload_width           = 700;
+$upload_height          = 500;
