@@ -13,6 +13,21 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
     $id = (int) ($_POST['id']);
     $room_id = (int) ($_POST['room_id']);
     $file = $_FILES['file'];
+    $select_column = ['image'];
+    $result = selectQueryById($id, $select_column, $table,  $mysqli);
+    $res_rows = $result->num_rows;
+    if ($res_rows <= 0) {
+        $process_error = true;
+        $form = false;
+        $error = true;
+        $err_msg = 'The image you search does not find!';
+    } else {
+        while ($row = $result->fetch_assoc()) {
+            $old_image_name = htmlspecialchars($row['image']);
+            $old_image_path = '../assets/upload/' . $room_id . '/' . $old_image_name;
+        }
+    }
+
     if ($file['name'] == '') {
         $error = true;
         $err_msg = "Please fill room image!";
@@ -22,11 +37,9 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $fileName = $file['name'];
         $fileType = $file['type'];
         $fileTempPath = $file['tmp_name'];
-        var_dump($file);
-        exit();
         $check_extension = checkImageExtension($fileName, $fileTempPath);
         if ($check_extension['error'] == false) {
-            $uniqueName = date('Y-m-d_h-i-s') . '_' . uniqid() . '.' . $check_extension['extension'];
+            $uniqueName = date('Y-m-d_h-i-s') . '-' . uniqid() . '.' . $check_extension['extension'];
             $filePath = '../assets/upload/' . $room_id . '/';
             $upload_process = true;
             if (!file_exists($filePath)) {
@@ -41,12 +54,15 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
                     $today_date = date('Y-m-d H:i:s');
                     $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
                     $update_data = [
-                        'image' => $uniqueName,
-                        'updated_at' => $today_date,
-                        'updated_by' => $user_id,
+                        'image' => "'$uniqueName'",
+                        'updated_at' => "'$today_date'",
+                        'updated_by' => "'$user_id'",
                     ];
+
                     $update = updateQuery($update_data, $id, $table, $mysqli);
+
                     if ($update) {
+                        unlink($old_image_path);
                         $url = $cp_base_url . "room_gallery.php?id=" . $room_id;
                         header("Refresh: 0; url=$url");
                         exit();
@@ -93,24 +109,20 @@ require "../templates/cp_template_top_nav.php";
                     <h3>Gallery Update</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>room_gallery_edit.php" method="POST" id="createForm"
-                            enctype="multipart/form-data">
+                        <form action="<?php echo $cp_base_url; ?>room_gallery_edit.php" method="POST" id="createForm" enctype="multipart/form-data">
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align" for="room_name">Room
                                     Image<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 d-flex justify-content-center">
-                                    <div
-                                        class="preview-wrapper rounded d-flex justify-content-center align-items-center">
+                                    <div class="preview-wrapper rounded d-flex justify-content-center align-items-center">
                                         <div class="preview-container">
                                             <a class="thumb-update btn btn-info text-white">Update Image</a>
                                             <img src="<?php echo $full_image_path; ?>" class="preview-img" />
                                         </div>
                                     </div>
-                                    <input type="file" name="file" id="thumb_file" value="" style="display: none;"
-                                        accept="image/*">
+                                    <input type="file" name="file" id="thumb_file" value="" style="display: none;" accept="image/*">
                                 </div>
-                                <label class="col-form-label col-md-3 col-sm-3 label-error hide"
-                                    id="thumb_error"></label>
+                                <label class="col-form-label col-md-3 col-sm-3 label-error hide" id="thumb_error"></label>
                             </div>
 
                             <div class="ln_solid">

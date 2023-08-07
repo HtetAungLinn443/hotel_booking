@@ -1,4 +1,5 @@
 <?php
+// insert query
 function insertQuery($insert_data, $table, $mysqli)
 {
     $column_name = implode(", ", array_keys($insert_data));
@@ -8,6 +9,7 @@ function insertQuery($insert_data, $table, $mysqli)
     $result = $mysqli->query($sql);
     return $result;
 }
+// update query
 function updateQuery($update_data, $id, $table, $mysqli)
 {
     $sql = "";
@@ -22,9 +24,8 @@ function updateQuery($update_data, $id, $table, $mysqli)
         }
     }
     $sql .= " WHERE id = '$id' ";
-
-    $resule = $mysqli->query($sql);
-    return $resule;
+    $result = $mysqli->query($sql);
+    return $result;
 }
 
 // check Unique Value
@@ -79,11 +80,16 @@ function checkUniqueValueUpdate($id, $check_colume, $table, $mysqli)
 }
 
 // List Query
-function listQuery($select_column, $table, $mysqli, $order = null)
+function listQuery($select_column, $table, $mysqli, $order = null, $where = null)
 {
     $cloumn_value = implode(", ", $select_column);
     $sql = "";
     $sql .= "SELECT " . $cloumn_value . " FROM " . "`$table`" . " WHERE deleted_at IS NULL ";
+    if ($where != null) {
+        foreach ($where as $key => $value) {
+            $sql .= " AND " . $key . " = " . "'$value'";
+        }
+    }
     if ($order != null) {
         $sql .= " ORDER BY ";
         $count = 0;
@@ -100,6 +106,7 @@ function listQuery($select_column, $table, $mysqli, $order = null)
     return $result_all;
 }
 
+// select query by id
 function selectQueryById($id, $select_column, $table, $mysqli)
 {
     $cloumn_value = implode(", ", $select_column);
@@ -109,7 +116,7 @@ function selectQueryById($id, $select_column, $table, $mysqli)
     return $result_all;
 }
 
-
+// image extyension check
 function checkImageExtension($fileName, $fileTempPath)
 {
     $return = [];
@@ -141,17 +148,10 @@ function cropAndResizeImage($sourcePath, $destinationPath, $width, $height)
     $sourceType = $imageInfo['mime'];
 
     $canvas = imagecreatetruecolor($width, $height);
-
-    // Create a new image from the source file
-    $sourceImage = imagecreatefromjpeg($sourcePath); // Change the function based on your image type (jpeg, png, gif, etc.)
-
-    // Resize the image
+    $sourceImage = imagecreatefromjpeg($sourcePath);
     imagecopyresampled($canvas, $sourceImage, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
 
-    // Save the resized image to the destination
-    imagejpeg($canvas, $destinationPath); // Change the function based on your desired output image format (jpeg, png, gif, etc.)
-
-    // Free up memory
+    imagejpeg($canvas, $destinationPath);
     imagedestroy($canvas);
     imagedestroy($sourceImage);
 
