@@ -7,21 +7,23 @@ require "../requires/include_function.php";
 $table = 'room_gallery';
 $err_msg = '';
 $error = false;
-
+$gallery_table = 'room_gallery';
 
 if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
+    $id = (int) ($_POST['id']);
     $room_id = (int) ($_POST['room_id']);
-    $process_error = false;
     $file = $_FILES['file'];
     if ($file['name'] == '') {
         $error = true;
         $err_msg = "Please fill room image!";
         $process_error = true;
     } else {
-        $file = $_FILES['file'];
+
         $fileName = $file['name'];
         $fileType = $file['type'];
         $fileTempPath = $file['tmp_name'];
+        var_dump($file);
+        exit();
         $check_extension = checkImageExtension($fileName, $fileTempPath);
         if ($check_extension['error'] == false) {
             $uniqueName = date('Y-m-d_h-i-s') . '_' . uniqid() . '.' . $check_extension['extension'];
@@ -38,15 +40,17 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
                     addWatermarkToImage($inputFile, $outputFile);
                     $today_date = date('Y-m-d H:i:s');
                     $user_id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_COOKIE['id'];
-                    $insert_data = [
-                        'room_id' => "'$room_id'",
-                        'image' => "'$uniqueName'",
-                        'created_at' => "'$today_date'",
-                        'created_by' => "'$user_id'",
-                        'updated_at' => "'$today_date'",
-                        'updated_by' => "'$user_id'",
+                    $update_data = [
+                        'image' => $uniqueName,
+                        'updated_at' => $today_date,
+                        'updated_by' => $user_id,
                     ];
-                    $insert = insertQuery($insert_data, $table, $mysqli);
+                    $update = updateQuery($update_data, $id, $table, $mysqli);
+                    if ($update) {
+                        $url = $cp_base_url . "room_gallery.php?id=" . $room_id;
+                        header("Refresh: 0; url=$url");
+                        exit();
+                    }
                 }
             }
         } else {
@@ -56,16 +60,18 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         }
     }
 } else {
-    $room_id = (int) ($_GET['id']);
+    $id = (int) ($_GET['id']);
+    $room_id = (int) ($_GET['r_id']);
+    $select_column = ['image'];
+    $result_img = selectQueryById($id, $select_column, $table, $mysqli);
+    $row_res = $result_img->num_rows;
+    while ($row = $result_img->fetch_assoc()) {
+        $image_path = $row['image'];
+        $full_image_path = $base_url . 'assets/upload/' . $room_id . '/' . $image_path;
+    }
 }
-$gallery_table = 'room_gallery';
-$select_column = ['id', 'room_id', 'image'];
-$order_by = ['id' => 'ASC'];
-$result_all = listQuery($select_column, $table, $mysqli, $order_by);
-$res_row = $result_all->num_rows;
 
-
-$title = "Hotel Booking:: Room Gallery Upload";
+$title = "Hotel Booking:: Room Gallery Update";
 require "../templates/cp_template_header.php";
 require "../templates/cp_template_sidebar_menu.php";
 require "../templates/cp_template_top_nav.php";
@@ -77,58 +83,27 @@ require "../templates/cp_template_top_nav.php";
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>Hotel Room Gallery</h3>
+                <h3>Hotel Room Gallery Update</h3>
             </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 ">
-                <div class="row m-3">
-                    <?php
-                    if ($res_row >= 1) {
-                        while ($row = $result_all->fetch_assoc()) {
-                            $gallery_id = (int) ($row['id']);
-                            $room_id = (int) ($row['room_id']);
-                            $db_image = htmlspecialchars($row['image']);
-                            $img_path = $base_url . 'assets/upload/' . $room_id . '/' . $db_image;
-                            $edit_path = $cp_base_url . 'room_gallery_edit.php?id=' . $gallery_id . '&' . 'r_id=' . $room_id;
-                            $delete_path = $cp_base_url . 'room_gallery_delete.php?id=' . $gallery_id . '&' . 'r_id=' . $room_id;
-                            ?>
-                            <div class="col-md-3">
-                                <div class="image-wrapper shadow-sm">
-                                    <img src="<?php echo $img_path; ?>">
-                                </div>
-                                <div class="btn-wrapper d-flex justify-content-between ">
-                                    <a href="<?php echo $edit_path; ?>" class="btn btn-sm btn-info w-50 "><i
-                                            class="fa fa-pen-to-square"></i> Edit</a>
-                                    <a href="<?php echo $delete_path; ?>" class="btn btn-sm btn-danger w-50"><i
-                                            class="fa fa-trash"></i> Delete</a>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                    }
-                    ?>
-
-
-                </div>
                 <div class="x_panel">
-                    <h3>Gallery Create</h3>
+                    <h3>Gallery Update</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>room_gallery.php" method="POST" id="createForm"
+                        <form action="<?php echo $cp_base_url; ?>room_gallery_edit.php" method="POST" id="createForm"
                             enctype="multipart/form-data">
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align" for="room_name">Room
                                     Image<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 d-flex justify-content-center">
                                     <div
-                                        class="preview-wrapper rounded  d-flex justify-content-center align-items-center">
-                                        <label class="thumb-upload btn btn-info">Upload
-                                            Image</label>
-                                        <div class="preview-container" style="display:none;">
+                                        class="preview-wrapper rounded d-flex justify-content-center align-items-center">
+                                        <div class="preview-container">
                                             <a class="thumb-update btn btn-info text-white">Update Image</a>
-                                            <img src="" class="preview-img" />
+                                            <img src="<?php echo $full_image_path; ?>" class="preview-img" />
                                         </div>
                                     </div>
                                     <input type="file" name="file" id="thumb_file" value="" style="display: none;"
@@ -144,7 +119,9 @@ require "../templates/cp_template_top_nav.php";
                                         <button type='submit' class="btn btn-primary" id="submit-btn">Upload</button>
                                         <button type='reset' class="btn btn-success" id="reset-btn">Reset</button>
                                         <input type="hidden" name="form-sub" value="1">
+                                        <input type="hidden" name="id" value="<?php echo $id; ?>">
                                         <input type="hidden" name="room_id" value="<?php echo $room_id; ?>">
+
                                     </div>
                                 </div>
                             </div>
