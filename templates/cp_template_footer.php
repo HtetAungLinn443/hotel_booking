@@ -34,6 +34,8 @@
 </script>
 <script src="<?php echo $base_url ?>assets/backend/js/datatable/datatables.net-responsive-bs/responsive.bootstrap.js">
 </script>
+<script src="<?php echo $base_url ?>assets/backend/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js">
+</script>
 <!-- Custom Theme Scripts -->
 <script src="<?php echo $base_url ?>assets/backend/js/custom.js"></script>
 

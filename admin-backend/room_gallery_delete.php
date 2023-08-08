@@ -6,7 +6,7 @@ require "../requires/check_authencation.php";
 require "../requires/include_function.php";
 $table = 'room_gallery';
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id']) && !isset($_GET['r_id'])) {
     $url = $cp_base_url . "room_list.php?msg=error";
     header("Refresh: 0; url=$url");
     exit();

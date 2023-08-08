@@ -97,15 +97,17 @@ require "../templates/cp_template_top_nav.php";
                             $edit_path = $cp_base_url . 'room_gallery_edit.php?id=' . $gallery_id . '&' . 'r_id=' . $room_id;
                             $delete_path = $cp_base_url . 'room_gallery_delete.php?id=' . $gallery_id . '&' . 'r_id=' . $room_id;
                     ?>
-                            <div class="col-md-2">
-                                <div class="image-wrapper shadow-sm">
-                                    <img src="<?php echo $img_path; ?>">
-                                </div>
-                                <div class="btn-wrapper d-flex justify-content-between ">
-                                    <a href="<?php echo $edit_path; ?>" class="btn btn-sm btn-info w-50 "><i class="fa fa-pen-to-square"></i> Edit</a>
-                                    <a href="<?php echo $delete_path; ?>" class="btn btn-sm btn-danger w-50"><i class="fa fa-trash"></i> Delete</a>
-                                </div>
-                            </div>
+                    <div class="col-md-3">
+                        <div class="image-wrapper shadow-sm">
+                            <img src="<?php echo $img_path; ?>">
+                        </div>
+                        <div class="btn-wrapper d-flex justify-content-between ">
+                            <a href="<?php echo $edit_path; ?>" class="btn btn-sm btn-info w-50 "><i
+                                    class="fa fa-pen-to-square"></i> Edit</a>
+                            <a href="<?php echo $delete_path; ?>" class="btn btn-sm btn-danger w-50"><i
+                                    class="fa fa-trash"></i> Delete</a>
+                        </div>
+                    </div>
                     <?php
                         }
                     }
@@ -117,12 +119,14 @@ require "../templates/cp_template_top_nav.php";
                     <h3>Gallery Create</h3>
                     <div class="x_content">
                         <br />
-                        <form action="<?php echo $cp_base_url; ?>room_gallery.php" method="POST" id="createForm" enctype="multipart/form-data">
+                        <form action="<?php echo $cp_base_url; ?>room_gallery.php" method="POST" id="createForm"
+                            enctype="multipart/form-data">
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align" for="room_name">Room
                                     Image<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 d-flex justify-content-center">
-                                    <div class="preview-wrapper rounded  d-flex justify-content-center align-items-center">
+                                    <div
+                                        class="preview-wrapper rounded  d-flex justify-content-center align-items-center">
                                         <label class="thumb-upload btn btn-info">Upload
                                             Image</label>
                                         <div class="preview-container" style="display:none;">
@@ -130,9 +134,11 @@ require "../templates/cp_template_top_nav.php";
                                             <img src="" class="preview-img" />
                                         </div>
                                     </div>
-                                    <input type="file" name="file" id="thumb_file" value="" style="display: none;" accept="image/*">
+                                    <input type="file" name="file" id="thumb_file" value="" style="display: none;"
+                                        accept="image/*">
                                 </div>
-                                <label class="col-form-label col-md-3 col-sm-3 label-error hide" id="thumb_error"></label>
+                                <label class="col-form-label col-md-3 col-sm-3 label-error hide"
+                                    id="thumb_error"></label>
                             </div>
 
                             <div class="ln_solid">
