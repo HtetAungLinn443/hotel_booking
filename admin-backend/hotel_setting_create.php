@@ -55,7 +55,7 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
                     'online_phone' => "'$online_phone'",
                     'size_unit' => "'$size_unit'",
                     'occupancy' => "'$occupancy'",
-                    'room_price' => "'$price_unit'",
+                    'price_unit' => "'$price_unit'",
                 ];
             } else {
                 $update_data = [
@@ -68,8 +68,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
                     'online_phone' => "'$online_phone'",
                     'size_unit' => "'$size_unit'",
                     'occupancy' => "'$occupancy'",
-                    'room_price' => "'$price_unit'",
-                    'logo' => "'$uniqueName'",
+                    'price_unit' => "'$price_unit'",
+                    'logo_path' => "'$uniqueName'",
                 ];
             }
 
@@ -120,8 +120,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
                 'online_phone' => "'$online_phone'",
                 'size_unit' => "'$size_unit'",
                 'occupancy' => "'$occupancy'",
-                'room_price' => "'$price_unit'",
-                'logo' => "'$uniqueName'",
+                'price_unit' => "'$price_unit'",
+                'logo_path  ' => "'$uniqueName'",
             ];
             $insert = insertQuery($insert_data, $table, $mysqli);
             if ($insert) {
@@ -163,8 +163,8 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         'online_phone',
         'size_unit',
         'occupancy',
-        'room_price',
-        'logo',
+        'price_unit',
+        'logo_path',
     ];
     $result = listQuery($select_column, $table, $mysqli);
 
@@ -174,15 +174,15 @@ if (isset($_POST['form-sub']) && $_POST['form-sub'] == '1') {
         $id = $row['id'];
         $name = $row['name'];
         $email = $row['email'];
-        $address = $row['address'];
+        $address = htmlspecialchars($row['address']);
         $check_in = $row['check_in_time'];
         $check_out = $row['check_out_time'];
         $outline_phone = $row['outline_phone'];
         $online_phone = $row['online_phone'];
         $size_unit = $row['size_unit'];
         $occupancy = $row['occupancy'];
-        $price_unit = $row['room_price'];
-        $uniqueName = $row['logo'];
+        $price_unit = $row['price_unit'];
+        $uniqueName = $row['logo_path'];
         $setting_logo = $base_url . '/assets/images/' . $uniqueName;
     }
 }
@@ -335,17 +335,17 @@ require "../templates/cp_template_top_nav.php";
                                     <div
                                         class="preview-wrapper rounded  d-flex justify-content-center align-items-center">
                                         <label class="thumb-upload btn btn-info" style="<?php if ($setting_logo == '') {
-                                                                                        echo 'display:block';
-                                                                                    } else {
-                                                                                        echo 'display:none';
-                                                                                    } ?>">Upload
+                                            echo 'display:inline';
+                                        } else {
+                                            echo 'display:none';
+                                        } ?>">Upload
                                             Image</label>
                                         <div class="preview-container">
                                             <a class="thumb-update btn btn-info text-white" style="<?php if ($setting_logo == '') {
-                                                                                                        echo 'display:none';
-                                                                                                    } else {
-                                                                                                        echo 'display:block';
-                                                                                                    } ?>">Update
+                                                echo 'display:none';
+                                            } else {
+                                                echo 'display:inline';
+                                            } ?>">Update
                                                 Image</a>
                                             <img src="<?php echo $setting_logo; ?>" class="preview-img" />
                                         </div>
@@ -363,9 +363,9 @@ require "../templates/cp_template_top_nav.php";
                                         <input type="hidden" name="form-sub" value="1">
                                         <?php
                                         if (isset($id)) {
-                                        ?>
-                                        <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                        <?php
+                                            ?>
+                                            <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                            <?php
                                         }
                                         ?>
                                     </div>
@@ -386,45 +386,45 @@ require "../templates/cp_template_footer.php";
 ?>
 <script src="<?php echo $base_url ?>assets/backend/js/pages/room_create_update.js?v=202382"></script>
 <script>
-$(document).ready(function() {
-    $('#check_in').datetimepicker({
-        format: 'hh:mm A'
-    });
-    $('#check_out').datetimepicker({
-        format: 'hh:mm A'
-    });
-    // $("#submit-btn").click(function () {
-    //     let error = false;
-    //     const view_name = $("#viewName").val();
-    //     const view_name_length = view_name.length;
+    $(document).ready(function () {
+        $('#check_in').datetimepicker({
+            format: 'hh:mm A'
+        });
+        $('#check_out').datetimepicker({
+            format: 'hh:mm A'
+        });
+        // $("#submit-btn").click(function () {
+        //     let error = false;
+        //     const view_name = $("#viewName").val();
+        //     const view_name_length = view_name.length;
 
-    //     if (view_name == '') {
-    //         $("#viewName_error").text('Please fill hotel room view name');
-    //         $("#viewName_error").show();
-    //         error = true;
-    //     }
-    //     if (view_name_length < 2 && view_name != '') {
-    //         $("#viewName_error").text('Hotel room view name must be greater then two.');
-    //         $("#viewName_error").show();
-    //         error = true;
-    //     }
-    //     if (view_name_length > 20 && view_name != '') {
-    //         $("#viewName_error").text('Hotel room view name must be less then twenty.');
-    //         $("#viewName_error").show();
-    //         error = true;
-    //     }
-    //     if (!error) {
-    //         $("#viewName_error").hide();
-    //         $("#createForm").submit();
-    //     }
-    // });
-    // when click reset btn
-    // $("#reset-btn").click(function() {
-    //     $("#viewName_error").hide();
-    //     $('#viewName').val('');
-    // })
+        //     if (view_name == '') {
+        //         $("#viewName_error").text('Please fill hotel room view name');
+        //         $("#viewName_error").show();
+        //         error = true;
+        //     }
+        //     if (view_name_length < 2 && view_name != '') {
+        //         $("#viewName_error").text('Hotel room view name must be greater then two.');
+        //         $("#viewName_error").show();
+        //         error = true;
+        //     }
+        //     if (view_name_length > 20 && view_name != '') {
+        //         $("#viewName_error").text('Hotel room view name must be less then twenty.');
+        //         $("#viewName_error").show();
+        //         error = true;
+        //     }
+        //     if (!error) {
+        //         $("#viewName_error").hide();
+        //         $("#createForm").submit();
+        //     }
+        // });
+        // when click reset btn
+        // $("#reset-btn").click(function() {
+        //     $("#viewName_error").hide();
+        //     $('#viewName').val('');
+        // })
 
-})
+    })
 </script>
 
 
