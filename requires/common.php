@@ -9,3 +9,5 @@ $thumb_width            = 300;
 $thumb_hight            = 200;
 $upload_width           = 700;
 $upload_height          = 500;
+$logo_width             = 100;
+$logo_height            = 100;
