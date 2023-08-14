@@ -33,7 +33,6 @@ $row_res = $result->num_rows;
 //     exit();
 // }
 $row_res = $result->num_rows;
-
 if ($row_res >= 1) {
     $row = $result->fetch_assoc();
 
@@ -70,11 +69,11 @@ require 'templates/template_header.php';
                             if ($img_row >= 0) {
                                 while ($row = $img_res->fetch_assoc()) {
                                     $img_path = $base_url . 'assets/upload/' . $id . '/' . $row['image'];
-                            ?>
+                                    ?>
                                     <div class="item">
                                         <div class="room-img" style="background-image: url(<?php echo $img_path; ?>);"></div>
                                     </div>
-                            <?php
+                                    <?php
                                 }
                             }
                             ?>
