@@ -1,15 +1,15 @@
-Options -Indexes
-
-# Deny access to directory listing and folder paths
 RewriteEngine On
-RewriteRule ^folder/ - [F]
 
+# Exclude existing files and directories from being rewritten
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Your other rewrite rules go here
 RewriteRule ^rooms$ rooms.php [L]
-RewriteRule ^room/detail/(\d+)$ room_details.php?id=$1 [QSA,L]
+# RewriteRule ^room/detail/(\d+)$ room_details.php?id=$1 [L,QSA]
 
 # Allow access to PHP files
 <FilesMatch "\.php$">
     Order allow,deny
     Allow from all
 </FilesMatch>
-

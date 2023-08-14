@@ -12,19 +12,19 @@ $error_message = '';
 if (isset($_GET['msg'])) {
     if ($_GET['msg'] == 'success') {
         $success = true;
-        $success_message = 'Created Hotel Room Special Feature Success!';
+        $success_message = 'Created Hotel Room Success!';
     } else if ($_GET['msg'] == 'edit') {
         $success = true;
-        $success_message = 'Updated Hotel Room Special Feature Success!';
+        $success_message = 'Updated Hotel Room Success!';
     } else if ($_GET['msg'] == 'delete') {
         $success = true;
-        $success_message = 'Deleted Hotel Room Special Feature Success!';
+        $success_message = 'Deleted Hotel Room Success!';
     } else {
         $error = true;
         $error_message = 'Something Wrong.';
     }
 }
-$select_column = ['id', 'name'];
+$select_column = ['id', 'name', 'size', 'occupancy', 'price_per_day', 'extra_bed_price_per_day', 'thumbnail_img'];
 $order_by = ['id' => 'DESC'];
 $result_all = listQuery($select_column, $table, $mysqli, $order_by);
 $res_row = $result_all->num_rows;
@@ -48,14 +48,17 @@ require "../templates/cp_template_top_nav.php";
         <div class="row">
             <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
+                    <a href="<?php echo $cp_base_url ?>room_create.php" class="btn btn-info ">Create View</a>
                     <div class="x_content">
                         <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
                             cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th class="">Image</th>
-                                    <th class="">Name</th>
-                                    <th class=""></th>
+                                    <th class="text-center">Image</th>
+                                    <th class="text-center">Name</th>
+                                    <th class="text-center">Occupancy</th>
+                                    <th class="text-center">Price Per Day</th>
+                                    <th class="text-center">Extra Bed Price</th>
                                     <th class=" text-center">Action</th>
                                 </tr>
                             </thead>
@@ -65,26 +68,55 @@ require "../templates/cp_template_top_nav.php";
                                     while ($row = $result_all->fetch_assoc()) {
                                         $db_id = htmlspecialchars($row['id']);
                                         $db_name = htmlspecialchars($row['name']);
-                                        ?>
-                                        <tr>
-                                            <td>
-                                                <?php echo $db_id; ?>
-                                            </td>
-                                            <td>
-                                                <?php echo $db_name; ?>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <a href="<?php echo $cp_base_url . "feature_edit.php?id=" . $db_id ?>"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                </a>
-                                                <a href="<?php echo $cp_base_url . "feature_delete.php?id=" . $db_id ?>"
-                                                    class="btn btn-sm btn-danger">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <?php
+                                        $thumb = htmlspecialchars($row['thumbnail_img']);
+                                        $occupancy = htmlspecialchars($row['occupancy']);
+                                        $price_per_day = (int)($row['price_per_day']);
+                                        $extra_price = (int)($row['extra_bed_price_per_day']);
+
+                                        $thumb_path = $base_url . 'assets/upload/' . $db_id . '/thumb/' . $thumb;
+                                ?>
+                                <tr>
+                                    <td class="text-center">
+                                        <img src="<?php echo $thumb_path; ?>" style="height:50px;"
+                                            class="img-thumbnail">
+                                    </td>
+                                    <td>
+                                        <b><?php echo $db_name; ?></b>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <?php echo $occupancy  ?>
+                                            <?php echo (isset($setting['occupancy'])) ? $setting['occupancy'] : ""; ?>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <?php echo $price_per_day ?>
+                                            <?php echo (isset($setting['price_unit'])) ? $setting['price_unit'] : ""; ?>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <?php echo $extra_price ?>
+                                            <?php echo (isset($setting['price_unit'])) ? $setting['price_unit'] : ""; ?>
+                                        </p>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <a href="<?php echo $cp_base_url . "room_detail.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-primary">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <a href="<?php echo $cp_base_url . "room_edit.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="<?php echo $cp_base_url . "room_delete.php?id=" . $db_id ?>"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php
                                     }
                                 }
                                 ?>

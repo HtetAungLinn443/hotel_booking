@@ -4,6 +4,57 @@ require "requires/common.php";
 require "requires/connect.php";
 require "requires/include_function.php";
 require "requires/setting.php";
+$id = (int) ($_GET['id']);
+$id = $mysqli->real_escape_string($id);
+$sql = "SELECT 
+            T01.name AS room_name,
+            T01.size AS room_size,
+            T01.occupancy,
+            T01.description,
+            T01.details,
+            T01.price_per_day AS room_price,
+            T01.extra_bed_price_per_day AS extra_bed_price,
+            T01.thumbnail_img,
+            T02.name AS bed_type,
+            T03.name AS view_name 
+        FROM 
+            `room` AS T01 
+        LEFT JOIN 
+            `bed_type` AS T02 ON T01.bad_type_id = T02.id 
+        LEFT JOIN 
+            `view` AS T03 ON T01.view_id = T03.id
+        WHERE T01.id = '$id'";
+
+$result = $mysqli->query($sql);
+$row_res = $result->num_rows;
+// if ($row_res <= 0) {
+//     $url = $base_url . "index.php?msg=error";
+//     header("Refresh: 0; url=$url");
+//     exit();
+// }
+$row_res = $result->num_rows;
+
+if ($row_res >= 1) {
+    $row = $result->fetch_assoc();
+
+    $room_name = htmlspecialchars($row['room_name']);
+    $room_occupation = htmlspecialchars($row['occupancy']);
+    $room_bed = htmlspecialchars($row['bed_type']);
+    $room_size = htmlspecialchars($row['room_size']);
+    $room_view = htmlspecialchars($row['view_name']);
+    $room_price = htmlspecialchars($row['room_price']);
+    $extra_bed_price = htmlspecialchars($row['extra_bed_price']);
+    $description = htmlspecialchars($row['description']);
+    $room_details = htmlspecialchars($row['details']);
+    $thumb = htmlspecialchars($row['thumbnail_img']);
+    $thumb_path = $base_url . 'assets/upload/' . $id . '/thumb/' . $thumb;
+
+    // room gallery
+    $sql = "SELECT image FROM `room_gallery` WHERE room_id = '$id' ORDER BY id ASC";
+    $img_res = $mysqli->query($sql);
+    $img_row = $img_res->num_rows;
+}
+
 
 require 'templates/template_header.php';
 
@@ -15,114 +66,51 @@ require 'templates/template_header.php';
                 <div class="row">
                     <div class="col-md-12 ftco-animate">
                         <div class="single-slider owl-carousel">
-                            <div class="item">
-                                <div class="room-img" style="background-image: url(images/room-4.jpg);"></div>
-                            </div>
-                            <div class="item">
-                                <div class="room-img" style="background-image: url(images/room-5.jpg);"></div>
-                            </div>
-                            <div class="item">
-                                <div class="room-img" style="background-image: url(images/room-6.jpg);"></div>
-                            </div>
+                            <?php
+                            if ($img_row >= 0) {
+                                while ($row = $img_res->fetch_assoc()) {
+                                    $img_path = $base_url . 'assets/upload/' . $id . '/' . $row['image'];
+                            ?>
+                                    <div class="item">
+                                        <div class="room-img" style="background-image: url(<?php echo $img_path; ?>);"></div>
+                                    </div>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="col-md-12 room-single mt-4 mb-5 ftco-animate">
-                        <h2 class="mb-4">Luxury Room <span>- (4 Available rooms)</span></h2>
-                        <p>When she reached the first hills of the Italic Mountains, she had a last view back on the
-                            skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline
-                            of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she
-                            continued her way.</p>
+                        <h2 class="mb-4"><?php echo $room_name ?> <span>- (<?php echo $room_occupation ?>
+                                <?php echo (isset($setting['occupancy'])) ? $setting['occupancy'] : ""; ?>)</span>
+                        </h2>
+                        <p>
+                            <?php echo $room_details ?>
+                        </p>
                         <div class="d-md-flex mt-5 mb-5">
                             <ul class="list">
-                                <li><span>Max:</span> 3 Persons</li>
-                                <li><span>Size:</span> 45 m2</li>
+                                <li><span>Max:</span> <?php echo $room_occupation ?>
+                                    <?php echo (isset($setting['occupancy'])) ? $setting['occupancy'] : ""; ?></li>
+                                <li><span>Size:</span> <?php echo $room_size ?>
+                                    <?php echo (isset($setting['size_unit'])) ? $setting['size_unit'] : ""; ?></li>
+                                <li><span>Price Per Day:</span> <?php echo $room_price ?>
+                                    <?php echo (isset($setting['price_unit'])) ? $setting['price_unit'] : ""; ?></li>
                             </ul>
                             <ul class="list ml-md-5">
-                                <li><span>View:</span> Sea View</li>
-                                <li><span>Bed:</span> 1</li>
+                                <li><span>View:</span> <?php echo $room_view ?></li>
+                                <li><span>Bed:</span> <?php echo $room_bed ?></li>
+                                <li><span>Extra Bed Price Per Day:</span> <?php echo $extra_bed_price ?>
+                                    <?php echo (isset($setting['price_unit'])) ? $setting['price_unit'] : ""; ?></li>
                             </ul>
                         </div>
-                        <p>When she reached the first hills of the Italic Mountains, she had a last view back on the
-                            skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline
-                            of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she
-                            continued her way.</p>
-                    </div>
-                    <div class="col-md-12 room-single ftco-animate mb-5 mt-4">
-                        <h3 class="mb-4">Take A Tour</h3>
-                        <div class="block-16">
-                            <figure>
-                                <img src="images/room-4.jpg" alt="Image placeholder" class="img-fluid">
-                                <a href="https://vimeo.com/45830194" class="play-button popup-vimeo"><span
-                                        class="icon-play"></span></a>
-                            </figure>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 properties-single ftco-animate mb-5 mt-4">
-                        <h4 class="mb-4">Review &amp; Ratings</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <form method="post" class="star-rating">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                        <label class="form-check-label" for="exampleCheck1">
-                                            <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                                        class="icon-star"></i><i class="icon-star"></i><i
-                                                        class="icon-star"></i> 100
-                                                    Ratings</span></p>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                        <label class="form-check-label" for="exampleCheck1">
-                                            <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                                        class="icon-star"></i><i class="icon-star"></i><i
-                                                        class="icon-star-o"></i> 30
-                                                    Ratings</span></p>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                        <label class="form-check-label" for="exampleCheck1">
-                                            <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                                        class="icon-star"></i><i class="icon-star-o"></i><i
-                                                        class="icon-star-o"></i> 5
-                                                    Ratings</span></p>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                        <label class="form-check-label" for="exampleCheck1">
-                                            <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                                        class="icon-star-o"></i><i class="icon-star-o"></i><i
-                                                        class="icon-star-o"></i> 0
-                                                    Ratings</span></p>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                        <label class="form-check-label" for="exampleCheck1">
-                                            <p class="rate"><span><i class="icon-star"></i><i class="icon-star-o"></i><i
-                                                        class="icon-star-o"></i><i class="icon-star-o"></i><i
-                                                        class="icon-star-o"></i> 0
-                                                    Ratings</span></p>
-                                        </label>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        <p>
+                            <?php echo $description ?>
+                        </p>
                     </div>
                 </div>
             </div> <!-- .col-md-8 -->
             <div class="col-lg-4 sidebar ftco-animate pl-md-5">
-                <div class="sidebar-box">
-                    <form action="#" class="search-form">
-                        <div class="form-group">
-                            <span class="icon ion-ios-search"></span>
-                            <input type="text" class="form-control" placeholder="Search...">
-                        </div>
-                    </form>
-                </div>
+
                 <div class="sidebar-box ftco-animate">
                     <div class="categories">
                         <h3>Categories</h3>
@@ -173,27 +161,6 @@ require 'templates/template_header.php';
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="sidebar-box ftco-animate">
-                    <h3>Tag Cloud</h3>
-                    <div class="tagcloud">
-                        <a href="#" class="tag-cloud-link">dish</a>
-                        <a href="#" class="tag-cloud-link">menu</a>
-                        <a href="#" class="tag-cloud-link">food</a>
-                        <a href="#" class="tag-cloud-link">sweet</a>
-                        <a href="#" class="tag-cloud-link">tasty</a>
-                        <a href="#" class="tag-cloud-link">delicious</a>
-                        <a href="#" class="tag-cloud-link">desserts</a>
-                        <a href="#" class="tag-cloud-link">drinks</a>
-                    </div>
-                </div>
-
-                <div class="sidebar-box ftco-animate">
-                    <h3>Paragraph</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem
-                        necessitatibus voluptate quod mollitia delectus aut, sunt placeat nam vero culpa sapiente
-                        consectetur similique, inventore eos fugit cupiditate numquam!</p>
                 </div>
             </div>
         </div>
