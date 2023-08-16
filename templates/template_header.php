@@ -2,7 +2,7 @@
 <html lang="en">
 
     <head>
-        <title>Harborlights - Free Bootstrap 4 Template by Colorlib</title>
+        <title><?php echo (isset($setting['name'])) ? $setting['name'] : ''; ?>:: <?php echo $title; ?></title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="<?php echo $base_url ?>assets/frontend/css/bootstrap-datepicker.css">
         <link rel="stylesheet" href="<?php echo $base_url ?>assets/frontend/css/jquery.timepicker.css">
 
-
+        <link rel="stylesheet" href="<?php echo $base_url ?>assets/frontend/css/jquery_ui.css">
         <link rel="stylesheet" href="<?php echo $base_url ?>assets/frontend/css/flaticon.css">
         <link rel="stylesheet" href="<?php echo $base_url ?>assets/frontend/css/icomoon.css">
         <link rel="stylesheet" href="<?php echo $base_url ?>assets/frontend/css/style.css">
@@ -32,7 +32,8 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
             <div class="container">
-                <a class="navbar-brand" href="<?php $base_url; ?>index.php"><?php echo (isset($setting['name'])) ? $setting['name'] : ""; ?></a>
+                <a class="navbar-brand"
+                    href="<?php $base_url; ?>index.php"><?php echo (isset($setting['name'])) ? $setting['name'] : ""; ?></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
                     aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="oi oi-menu"></span> Menu
@@ -41,7 +42,7 @@
                 <div class="collapse navbar-collapse" id="ftco-nav">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active"><a href="index.php" class="nav-link">Home</a></li>
-                        <li class="nav-item"><a href="rooms.html" class="nav-link">Our Rooms</a></li>
+                        <li class="nav-item"><a href="rooms.php" class="nav-link">Our Rooms</a></li>
                         <li class="nav-item"><a href="about.php" class="nav-link">About Us</a></li>
                         <li class="nav-item"><a href="contact.php" class="nav-link">Contact</a></li>
                     </ul>
@@ -51,28 +52,28 @@
         <!-- END nav -->
         <div class="hero">
             <section class="home-slider owl-carousel">
-                <div class="slider-item" style="background-image:url(assets/frontend/images/bg_1.jpg);">
+                <div class="slider-item"
+                    style="background-image:url(<?php echo $base_url?>assets/frontend/images/bg_1.jpg);">
                     <div class="overlay"></div>
                     <div class="container">
                         <div class="row no-gutters slider-text align-items-center justify-content-end">
                             <div class="col-md-6 ftco-animate">
                                 <div class="text">
-                                    <h2>More than a hotel... an experience</h2>
-                                    <h1 class="mb-3">Hotel for the whole family, all year round.</h1>
+                                    <?php echo $header_title1 ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="slider-item" style="background-image:url(assets/frontend/images/bg_2.jpg);">
+                <div class="slider-item"
+                    style="background-image:url(<?php echo $base_url?>assets/frontend/images/bg_2.jpg);">
                     <div class="overlay"></div>
                     <div class="container">
                         <div class="row no-gutters slider-text align-items-center justify-content-end">
                             <div class="col-md-6 ftco-animate">
                                 <div class="text">
-                                    <h2>Harbor Lights Hotel &amp; Resort</h2>
-                                    <h1 class="mb-3">It feels like staying in your own home.</h1>
+                                    <?php echo $header_title2 ?>
                                 </div>
                             </div>
                         </div>

@@ -1,9 +1,21 @@
 <?php
+
+require "requires/common.php";
+require "requires/connect.php";
+require "requires/include_function.php";
+require "requires/setting.php";
+
 $table = 'room';
-$sql = "SELECT * FROM `$table` WHERE deleted_at IS NULL ORDER BY rand() LIMIT 6 ";
+$sql = "SELECT * FROM `$table` WHERE deleted_at IS NULL ORDER BY id DESC ";
 $result = $mysqli->query($sql);
 $result_row = $result->num_rows;
+$title = 'test';
+$header_title1 = '<h2>More than a hotel... an experience</h2>
+                <h1 class="mb-3">Hotel for the whole family, all year round.</h1>';
 
+$header_title2 = '<h2>Harbor Lights Hotel &amp; Resort</h2>
+                <h1 class="mb-3">It feels like staying in your own home.</h1>';
+require 'templates/template_header.php';
 ?>
 
 <section class="ftco-section ftco-no-pb ftco-room">
@@ -18,6 +30,7 @@ $result_row = $result->num_rows;
             <?php
             if ($result_row >= 1) {
                 $counter = 0;
+                $line = 1;
                 while ($row = $result->fetch_assoc()) {
                     $id = $row['id'];
                     $thumb = $row['thumbnail_img'];
@@ -26,14 +39,19 @@ $result_row = $result->num_rows;
                     $name = $row['name'];
                     $room_detail = $base_url . 'room/details/' . $id;
                     $counter++;
-                    if ($counter < 3 || $counter > 4) {
-                        $class1 = "";
-                        $class2 = "left-arrow";
-                    } else {
+                    if ($line % 2 == 0) {
+
                         $class1 = "order-md-last";
                         $class2 = "right-arrow";
+                    } else {
+                        $class1 = "";
+                        $class2 = "left-arrow";
                     }
 
+                    if ($counter == 2) {
+                        $counter = 0;
+                        $line++;
+                    }
                     ?>
                     <div class="col-lg-6">
                         <div class="room-wrap d-md-flex ftco-animate">
@@ -44,7 +62,8 @@ $result_row = $result->num_rows;
                                     <p class="star mb-0"><span class="ion-ios-star"></span><span
                                             class="ion-ios-star"></span><span class="ion-ios-star"></span><span
                                             class="ion-ios-star"></span><span class="ion-ios-star"></span></p>
-                                    <p class="mb-0"><span class="price mr-1"><?php echo $price . '(' . $setting['price_unit'] . ')'; ?></span>
+                                    <p class="mb-0"><span class="price mr-1"><?php echo $price ?>
+                                            (<?php echo (isset($setting['price_unit'])) ? $setting['price_unit'] : ''; ?>)</span>
                                         <span class="per">per
                                             night</span>
                                     </p>
@@ -63,3 +82,10 @@ $result_row = $result->num_rows;
         </div>
     </div>
 </section>
+
+
+
+<?php require 'templates/template_footer.php'; ?>
+</body>
+
+</html>

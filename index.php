@@ -10,7 +10,13 @@ $sql = "SELECT * FROM `$table` WHERE deleted_at IS NULL ORDER BY rand() LIMIT 6 
 $result = $mysqli->query($sql);
 $result_row = $result->num_rows;
 
-$title = 'test';
+$title = 'Softguide Hotel';
+
+$header_title1 = '<h2>More than a hotel... an experience</h2>
+                <h1 class="mb-3">Hotel for the whole family, all year round.</h1>';
+
+$header_title2 = '<h2>Harbor Lights Hotel &amp; Resort</h2>
+                <h1 class="mb-3">It feels like staying in your own home.</h1>';
 require 'templates/template_header.php';
 ?>
 
@@ -164,30 +170,7 @@ require 'templates/template_header.php';
     </div>
 </section>
 
-<section class="ftco-section ftco-wrap-about ftco-no-pt ftco-no-pb">
-    <div class="container">
-        <div class="row no-gutters">
-            <div class="col-md-7 order-md-last d-flex">
-                <div class="img img-1 mr-md-2 ftco-animate"
-                    style="background-image: url(assets/frontend/images/about-1.jpg);">
-                </div>
-                <div class="img img-2 ml-md-2 ftco-animate"
-                    style="background-image: url(assets/frontend/images/about-2.jpg);">
-                </div>
-            </div>
-            <div class="col-md-5 wrap-about pb-md-3 ftco-animate pr-md-5 pb-md-5 pt-md-4">
-                <div class="heading-section mb-4 my-5 my-md-0">
-                    <span class="subheading">About Harbor Lights Hotel</span>
-                    <h2 class="mb-4">Harbor Lights Hotel the Most Recommended Hotel All Over the World</h2>
-                </div>
-                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
-                    there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the
-                    Semantics, a large language ocean.</p>
-                <p><a href="#" class="btn btn-secondary rounded">Reserve Your Room Now</a></p>
-            </div>
-        </div>
-    </div>
-</section>
+<?php require 'aboutHarbor.php' ?>
 
 <section class="ftco-section ftco-no-pb ftco-room">
     <div class="container-fluid px-0">
@@ -247,58 +230,7 @@ require 'templates/template_header.php';
     </div>
 </section>
 
-<section class="instagram">
-    <div class="container-fluid">
-        <div class="row no-gutters justify-content-center pb-5">
-            <div class="col-md-7 text-center heading-section ftco-animate">
-                <span class="subheading">Photos</span>
-                <h2><span>Instagram</span></h2>
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col-sm-12 col-md ftco-animate">
-                <a href="images/insta-1.jpg" class="insta-img image-popup"
-                    style="background-image: url(assets/frontend/images/insta-1.jpg);">
-                    <div class="icon d-flex justify-content-center">
-                        <span class="icon-instagram align-self-center"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-12 col-md ftco-animate">
-                <a href="images/insta-2.jpg" class="insta-img image-popup"
-                    style="background-image: url(assets/frontend/images/insta-2.jpg);">
-                    <div class="icon d-flex justify-content-center">
-                        <span class="icon-instagram align-self-center"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-12 col-md ftco-animate">
-                <a href="images/insta-3.jpg" class="insta-img image-popup"
-                    style="background-image: url(assets/frontend/images/insta-3.jpg);">
-                    <div class="icon d-flex justify-content-center">
-                        <span class="icon-instagram align-self-center"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-12 col-md ftco-animate">
-                <a href="images/insta-4.jpg" class="insta-img image-popup"
-                    style="background-image: url(assets/frontend/images/insta-4.jpg);">
-                    <div class="icon d-flex justify-content-center">
-                        <span class="icon-instagram align-self-center"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-12 col-md ftco-animate">
-                <a href="images/insta-5.jpg" class="insta-img image-popup"
-                    style="background-image: url(assets/frontend/images/insta-5.jpg);">
-                    <div class="icon d-flex justify-content-center">
-                        <span class="icon-instagram align-self-center"></span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<?php require 'instagram.php' ?>
 
 <?php require 'templates/template_footer.php'; ?>
 </body>

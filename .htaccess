@@ -8,6 +8,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^rooms$ rooms.php [L]
 RewriteRule ^room/details/(\d+)$ room_details.php?id=$1 [QSA,L]
 
+RewriteRule ^room/reserve/(\d+)$ room_reserve.php?id=$1 [QSA,L]
+
 # Allow access to PHP files
 <FilesMatch "\.php$">
     Order allow,deny

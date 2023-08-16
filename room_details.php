@@ -23,16 +23,11 @@ $sql = "SELECT
             `bed_type` AS T02 ON T01.bad_type_id = T02.id 
         LEFT JOIN 
             `view` AS T03 ON T01.view_id = T03.id
-        WHERE T01.id = '$id'";
+        WHERE T01.id = '$id' AND T01.deleted_at IS NULL";
 
 $result = $mysqli->query($sql);
 $row_res = $result->num_rows;
-// if ($row_res <= 0) {
-//     $url = $base_url . "index.php?msg=error";
-//     header("Refresh: 0; url=$url");
-//     exit();
-// }
-$row_res = $result->num_rows;
+
 if ($row_res >= 1) {
     $row = $result->fetch_assoc();
 
@@ -49,12 +44,30 @@ if ($row_res >= 1) {
     $thumb_path = $base_url . 'assets/upload/' . $id . '/thumb/' . $thumb;
 
     // room gallery
-    $sql = "SELECT image FROM `room_gallery` WHERE room_id = '$id' ORDER BY id ASC";
-    $img_res = $mysqli->query($sql);
+    $gallery_sql = "SELECT image FROM `room_gallery` WHERE room_id = '$id' AND deleted_at IS NULL ORDER BY id ASC";
+    $img_res = $mysqli->query($gallery_sql);
     $img_row = $img_res->num_rows;
+    // room amenity
+    $amenity_sql = "SELECT T02.name, T02.type 
+                    FROM `room_amenity` AS T01 
+                    LEFT JOIN amenity AS T02  ON T01.amenity_id = T02.id 
+                    WHERE T01.room_id = '$id' 
+                    AND T01.deleted_at IS NULL
+                    AND T02.deleted_at IS NULL
+                    ORDER BY T02.type";
+    $amenity_res = $mysqli->query($amenity_sql);
+    $amenity_row = $amenity_res->num_rows;
+
+    // 
 }
 
+// selectQueryById($id, $select_column, $table, $mysqli);
+$title = "Room Details";
+$header_title1 = '<p class="breadcrumbs mb-2"><span class="mr-2"><a href="">Home</a></span></p>
+	            <h1 class="mb-4 bread">Rooms Details</h1>';
 
+$header_title2 = '<p class="breadcrumbs mb-2"><span class="mr-2"><a href="">Home</a></span> <span class="mr-2"><a href="rooms.html">Rooms</a></span> <span>Rooms Single</span></p>
+	            <h1 class="mb-4 bread">Rooms Details</h1>';
 require 'templates/template_header.php';
 
 ?>
@@ -105,6 +118,10 @@ require 'templates/template_header.php';
                         <p>
                             <?php echo $description ?>
                         </p>
+                        <div class="">
+                            <a href="<?php echo $base_url ?>room/reserve/<?php echo $id ?>" type="submit"
+                                class="btn btn-primary py-3 px-5">Reserve</a>
+                        </div>
                     </div>
                 </div>
             </div> <!-- .col-md-8 -->
@@ -112,13 +129,19 @@ require 'templates/template_header.php';
 
                 <div class="sidebar-box ftco-animate">
                     <div class="categories">
-                        <h3>Categories</h3>
-                        <li><a href="#">Properties <span>(12)</span></a></li>
-                        <li><a href="#">Home <span>(22)</span></a></li>
-                        <li><a href="#">House <span>(37)</span></a></li>
-                        <li><a href="#">Villa <span>(42)</span></a></li>
-                        <li><a href="#">Apartment <span>(14)</span></a></li>
-                        <li><a href="#">Condominium <span>(140)</span></a></li>
+                        <h3>Amenities</h3>
+                        <?php if ($amenity_row >= 1) {
+                            while ($row = $amenity_res->fetch_assoc()) {
+                                $amenity_name = htmlspecialchars($row['name']);
+                                $amenity_type = (int) ($row['type']);
+                                ?>
+
+                                <li><a href="#"><?php echo $amenity_name; ?>
+                                        <span>(<?php echo $aminity_type[$amenity_type] ?>)</span></a></li>
+                                <?php
+                            }
+                        } ?>
+
                     </div>
                 </div>
 
