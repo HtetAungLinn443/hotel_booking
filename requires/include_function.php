@@ -102,7 +102,6 @@ function listQuery($select_column, $table, $mysqli, $order = null, $where = null
             }
         }
     }
-
     $result_all = $mysqli->query($sql);
     return $result_all;
 }

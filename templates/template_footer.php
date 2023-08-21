@@ -1,4 +1,5 @@
-<footer class="ftco-footer ftco-section img" style="background-image: url(assets/frontend/images/bg_4.jpg);">
+<footer class="ftco-footer ftco-section img"
+    style="background-image: url(<?php echo $base_url?>assets/frontend/images/bg_4.jpg);">
     <div class="overlay"></div>
     <div class="container">
         <div class="row mb-5">
