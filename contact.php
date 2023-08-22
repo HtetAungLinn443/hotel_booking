@@ -5,6 +5,7 @@ require "requires/connect.php";
 require "requires/include_function.php";
 require "requires/setting.php";
 $title = "Contact Page";
+$current_page = "contact";
 $header_title1 = '<p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home</a></span> <span>Contact Us</span></p>
 	            <h1 class="mb-4 bread">Contact Us</h1>';
 
@@ -58,8 +59,7 @@ require 'templates/template_header.php';
                         <input type="text" class="form-control" placeholder="Subject">
                     </div>
                     <div class="form-group">
-                        <textarea name="" id="" cols="30" rows="7" class="form-control"
-                            placeholder="Message"></textarea>
+                        <textarea name="" id="" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">

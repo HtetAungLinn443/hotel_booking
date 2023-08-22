@@ -9,7 +9,8 @@ $table = 'room';
 $sql = "SELECT * FROM `$table` WHERE deleted_at IS NULL ORDER BY id DESC ";
 $result = $mysqli->query($sql);
 $result_row = $result->num_rows;
-$title = 'test';
+$title = 'Our Room List Page';
+$current_page = 'our_room';
 $header_title1 = '<h2>More than a hotel... an experience</h2>
                 <h1 class="mb-3">Hotel for the whole family, all year round.</h1>';
 
@@ -52,30 +53,26 @@ require 'templates/template_header.php';
                         $counter = 0;
                         $line++;
                     }
-                    ?>
+            ?>
                     <div class="col-lg-6">
                         <div class="room-wrap d-md-flex ftco-animate">
-                            <a href="<?php echo $room_detail; ?>" class="img <?php echo $class1; ?>"
-                                style="background-image: url(<?php echo $thumb_full_path; ?>);"></a>
+                            <a href="<?php echo $room_detail; ?>" title="<?php echo $name; ?>" class="img <?php echo $class1; ?>" style="background-image: url(<?php echo $thumb_full_path; ?>);"></a>
                             <div class="half <?php echo $class2; ?> d-flex align-items-center">
                                 <div class="text p-4 text-center">
-                                    <p class="star mb-0"><span class="ion-ios-star"></span><span
-                                            class="ion-ios-star"></span><span class="ion-ios-star"></span><span
-                                            class="ion-ios-star"></span><span class="ion-ios-star"></span></p>
+                                    <p class="star mb-0"><span class="ion-ios-star"></span><span class="ion-ios-star"></span><span class="ion-ios-star"></span><span class="ion-ios-star"></span><span class="ion-ios-star"></span></p>
                                     <p class="mb-0"><span class="price mr-1"><?php echo $price ?>
                                             (<?php echo (isset($setting['price_unit'])) ? $setting['price_unit'] : ''; ?>)</span>
                                         <span class="per">per
                                             night</span>
                                     </p>
                                     <h3 class="mb-3"><a href="<?php echo $room_detail; ?>"><?php echo $name; ?></a></h3>
-                                    <p class="pt-1"><a href="<?php echo $room_detail; ?>"
-                                            class="btn-custom px-3 py-2 rounded">View
+                                    <p class="pt-1"><a href="<?php echo $room_detail; ?>" class="btn-custom px-3 py-2 rounded">View
                                             Details <span class="icon-long-arrow-right"></span></a></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <?php
+            <?php
                 }
             }
             ?>

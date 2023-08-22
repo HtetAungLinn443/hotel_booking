@@ -58,11 +58,22 @@ if ($row_res >= 1) {
     $amenity_res = $mysqli->query($amenity_sql);
     $amenity_row = $amenity_res->num_rows;
 
-    // 
+    // room special feature 
+    $feature_sql = "SELECT T02.name as feature_name
+                    FROM `room_special_feature` AS T01
+                    LEFT JOIN special_feature AS T02 
+                    ON T01.special_feature_id = T02.id
+                    WHERE T01.room_id = '$id' 
+                    AND T01.deleted_at IS NULL 
+                    AND T02.deleted_at IS NULL 
+                    ORDER BY T02.id ASC";
+    $feature_res = $mysqli->query($feature_sql);
+    $feature_row = $feature_res->num_rows;
 }
 
 // selectQueryById($id, $select_column, $table, $mysqli);
 $title = "Room Details";
+$current_page = "our_room";
 $header_title1 = '<p class="breadcrumbs mb-2"><span class="mr-2"><a href="">Home</a></span></p>
 	            <h1 class="mb-4 bread">Rooms Details</h1>';
 
@@ -82,11 +93,11 @@ require 'templates/template_header.php';
                             if ($img_row >= 0) {
                                 while ($row = $img_res->fetch_assoc()) {
                                     $img_path = $base_url . 'assets/upload/' . $id . '/' . $row['image'];
-                                    ?>
+                            ?>
                                     <div class="item">
                                         <div class="room-img" style="background-image: url(<?php echo $img_path; ?>);"></div>
                                     </div>
-                                    <?php
+                            <?php
                                 }
                             }
                             ?>
@@ -119,8 +130,7 @@ require 'templates/template_header.php';
                             <?php echo $description ?>
                         </p>
                         <div class="">
-                            <a href="<?php echo $base_url ?>room/reserve/<?php echo $id ?>" type="submit"
-                                class="btn btn-primary py-3 px-5">Reserve</a>
+                            <a href="<?php echo $base_url ?>room/reserve/<?php echo $id ?>" type="submit" class="btn btn-primary py-3 px-5">Reserve</a>
                         </div>
                     </div>
                 </div>
@@ -134,11 +144,11 @@ require 'templates/template_header.php';
                             while ($row = $amenity_res->fetch_assoc()) {
                                 $amenity_name = htmlspecialchars($row['name']);
                                 $amenity_type = (int) ($row['type']);
-                                ?>
+                        ?>
 
                                 <li><a href="#"><?php echo $amenity_name; ?>
                                         <span>(<?php echo $aminity_type[$amenity_type] ?>)</span></a></li>
-                                <?php
+                        <?php
                             }
                         } ?>
 
@@ -146,43 +156,22 @@ require 'templates/template_header.php';
                 </div>
 
                 <div class="sidebar-box ftco-animate">
-                    <h3>Recent Blog</h3>
-                    <div class="block-21 mb-4 d-flex">
-                        <a class="blog-img mr-4" style="background-image: url(images/image_1.jpg);"></a>
-                        <div class="text">
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the
-                                    blind texts</a></h3>
-                            <div class="meta">
-                                <div><a href="#"><span class="icon-calendar"></span> Oct 30, 2019</a></div>
-                                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+                    <h3>Specail Feature</h3>
+                    <?php
+                    if ($feature_row >= 1) {
+                        while ($row = $feature_res->fetch_assoc()) {
+                    ?>
+                            <div class=" mb-4 d-flex">
+                                <div class="text">
+                                    <h3 class="heading"><a href="#"><?php echo $row['feature_name']; ?> </a></h3>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="block-21 mb-4 d-flex">
-                        <a class="blog-img mr-4" style="background-image: url(images/image_2.jpg);"></a>
-                        <div class="text">
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the
-                                    blind texts</a></h3>
-                            <div class="meta">
-                                <div><a href="#"><span class="icon-calendar"></span> Oct 30, 2019</a></div>
-                                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="block-21 mb-4 d-flex">
-                        <a class="blog-img mr-4" style="background-image: url(images/image_3.jpg);"></a>
-                        <div class="text">
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the
-                                    blind texts</a></h3>
-                            <div class="meta">
-                                <div><a href="#"><span class="icon-calendar"></span> Oct 30, 2019</a></div>
-                                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
+                        }
+                    }
+                    ?>
+
+
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ require "requires/include_function.php";
 require "requires/setting.php";
 
 $title = 'About Page';
+$current_page = "about";
 $header_title1 = '<h2>More than a hotel... an experience</h2>
                 <h1 class="mb-3">Hotel for the whole family, all year round.</h1>';
 
